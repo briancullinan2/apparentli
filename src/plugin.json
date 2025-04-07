@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "app",
+  "name": "Apparentli",
+  "id": "briancullinan-mycomputer-app",
+  "backend": true,
+  "autoEnabled": true,
+  "executable": "gpx_my_computer",
+  "info": {
+    "keywords": [
+      "app"
+    ],
+    "description": "",
+    "author": {
+      "name": "Briancullinan"
+    },
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "includes": [
+    {
+      "type": "page",
+      "name": "Page One",
+      "path": "/a/briancullinan-mycomputer-app/one",
+      "addToNav": true,
+      "defaultNav": true
+    },
+    {
+      "type": "page",
+      "icon": "cog",
+      "name": "Configuration",
+      "path": "/plugins/briancullinan-mycomputer-app",
+      "role": "Admin",
+      "addToNav": true
+    }
+  ],
+  "routes": [
+    {
+      "path": "api/plugins/briancullinan-mycomputer-app/ping",
+      "method": "*",
+      "reqAction": "briancullinan-mycomputer-app.patents:read",
+      "url": "{{ .JsonData.backendUrl }}/api/plugins/briancullinan-mycomputer-app/ping",
+      "headers": [
+        {
+          "name": "Authorization",
+          "content": "{{ .SecureJsonData.backendApiToken }}"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "grafanaDependency": ">=10.4.0",
+    "plugins": []
+  }
+}

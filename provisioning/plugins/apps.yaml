@@ -1,0 +1,11 @@
+apiVersion: 1
+
+apps:
+  - type: 'briancullinan-mycomputer-app'
+    org_id: 1
+    org_name: 'briancullinan'
+    disabled: false
+    jsonData:
+      apiUrl: "http://default-url.com"
+    secureJsonData:
+      apiKey: secret-key
