@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, PageLayoutType } from '@grafana/data';
 import { useStyles2 } from '@grafana/ui';
 import { testIds } from '../components/testIds';
 import { PluginPage } from '@grafana/runtime';
+import { UrlSyncContextProvider } from '@grafana/scenes';
+import { getAdvancedTimeRangeComparisonScene } from '../utils/scenes';
 
 function PageFour() {
   const s = useStyles2(getStyles);
@@ -33,7 +35,7 @@ function PageFour() {
         },
         body: JSON.stringify(message),
       });
-  
+
       if (!res.ok) {
         console.error('Failed to send message:', await res.text());
         return
@@ -51,13 +53,17 @@ function PageFour() {
     }
   };
 
+  const scene = useMemo(() => getAdvancedTimeRangeComparisonScene(), []);
+
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
       <div className={s.page} data-testid={testIds.pageFour.container}>
-        <div className={s.container} dangerouslySetInnerHTML={{ __html: responseHtml }}>
-
-
+        <div className={s.scene}>
+          <UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >
+            <scene.Component model={scene} />
+          </UrlSyncContextProvider>
         </div>
+        <div className={s.container} dangerouslySetInnerHTML={{ __html: responseHtml }}></div>
         <div className={s.footer}>
           <div className={s.inputs}>
             <input
@@ -92,11 +98,12 @@ const getStyles = (theme: GrafanaTheme2) => ({
     max-width: 100%;
     min-height: 500px;
     height: 100%;
+    flex: 100%;
   `,
   content: css`
     margin-top: ${theme.spacing(6)};
   `,
-  footer:  css`
+  footer: css`
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -119,5 +126,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
     border: none;
     border-radius: 4px;
     cursor: pointer;
+  `,
+  scene: css`
+    flex: 50%;
   `
 });

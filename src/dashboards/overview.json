@@ -42,7 +42,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,7 +112,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "up{job=\"grafana\"}",
           "format": "time_series",
@@ -128,7 +128,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -194,7 +194,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "grafana_stat_totals_dashboard",
           "format": "time_series",
@@ -210,7 +210,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -276,7 +276,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "grafana_stat_total_users",
           "format": "time_series",
@@ -292,7 +292,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -358,7 +358,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "grafana_stat_total_playlists",
           "format": "time_series",
@@ -374,7 +374,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -443,7 +443,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "prometheus_tsdb_wal_corruptions_total{job=\"prometheus\"}",
           "format": "time_series",
@@ -459,7 +459,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "description": "",
       "fieldConfig": {
@@ -545,7 +545,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(process_resident_memory_bytes{job=\"prometheus\"})",
           "format": "time_series",
@@ -559,7 +559,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "process_virtual_memory_bytes{job=\"prometheus\"}",
           "format": "time_series",
@@ -576,7 +576,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -651,7 +651,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "topk(1, grafana_info or grafana_build_info)",
           "format": "time_series",
@@ -668,7 +668,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -813,7 +813,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": " sum (ALERTS)",
           "format": "time_series",
@@ -829,7 +829,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -913,7 +913,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "rate(prometheus_rule_group_iterations_missed_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -925,7 +925,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "rate(prometheus_rule_group_iterations_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -941,7 +941,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1016,7 +1016,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sort(topk(8, sum by (handler) (grafana_http_request_duration_seconds_count)))",
           "format": "time_series",
@@ -1033,7 +1033,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1149,7 +1149,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(irate(prometheus_tsdb_head_samples_appended_total{job=\"prometheus\"}[5m]))",
           "format": "time_series",
@@ -1168,7 +1168,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1252,7 +1252,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "topk(5, max(scrape_duration_seconds) by (job))",
           "format": "time_series",
@@ -1270,7 +1270,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "description": "",
       "fieldConfig": {
@@ -1355,7 +1355,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "prometheus_tsdb_head_chunks{job=\"prometheus\"}",
           "format": "time_series",
@@ -1372,7 +1372,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1487,7 +1487,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "prometheus_tsdb_blocks_loaded{job=\"prometheus\"}",
           "format": "time_series",
@@ -1503,7 +1503,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "description": "",
       "fieldConfig": {
@@ -1602,7 +1602,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "histogram_quantile(0.99, sum(rate(prometheus_tsdb_compaction_duration_bucket{job=\"prometheus\"}[5m])) by (le))",
           "format": "time_series",
@@ -1616,7 +1616,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "irate(prometheus_tsdb_compactions_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -1628,7 +1628,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "irate(prometheus_tsdb_compactions_failed_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -1640,7 +1640,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "irate(prometheus_tsdb_compactions_triggered_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -1656,7 +1656,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1740,7 +1740,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(prometheus_tsdb_head_active_appenders{job=\"prometheus\"})",
           "format": "time_series",
@@ -1754,7 +1754,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(process_open_fds{job=\"prometheus\"})",
           "format": "time_series",
@@ -1771,7 +1771,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1855,7 +1855,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "prometheus_engine_query_duration_seconds{job=\"prometheus\", quantile=\"0.99\"}",
           "format": "time_series",
@@ -1871,7 +1871,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1969,7 +1969,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "prometheus_tsdb_head_gc_duration_seconds{job=\"prometheus\",quantile=\"0.99\"}",
           "format": "time_series",
@@ -1981,7 +1981,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "irate(prometheus_tsdb_head_gc_duration_seconds_count{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -1997,7 +1997,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2112,7 +2112,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum by (status_code) (irate(grafana_http_request_duration_seconds_count[5m]))",
           "format": "time_series",
@@ -2129,7 +2129,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2244,7 +2244,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(irate(grafana_api_response_status_total[5m]))",
           "format": "time_series",
@@ -2256,7 +2256,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(irate(grafana_proxy_response_status_total[5m]))",
           "format": "time_series",
@@ -2268,7 +2268,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(irate(grafana_page_response_status_total[5m]))",
           "format": "time_series",
@@ -2284,7 +2284,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2399,7 +2399,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "increase(grafana_alerting_active_alerts[1m])",
           "format": "time_series",
@@ -2415,7 +2415,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2499,7 +2499,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "max(prometheus_rule_group_duration_seconds{job=\"prometheus\"}) by (quantile)",
           "format": "time_series",
@@ -2516,7 +2516,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "description": "Aggregated over all Grafana nodes.",
       "fieldConfig": {
@@ -2650,7 +2650,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(go_goroutines{job=\"grafana\"})",
           "format": "time_series",
@@ -2665,7 +2665,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "sum(process_resident_memory_bytes{job=\"grafana\"})",
           "format": "time_series",
@@ -2681,7 +2681,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cei7zcrm236yod"
+        "uid": "${query0}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2765,7 +2765,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "rate(prometheus_tsdb_reloads_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -2777,7 +2777,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cei7zcrm236yod"
+            "uid": "${query0}"
           },
           "expr": "rate(prometheus_tsdb_reloads_failures_total{job=\"prometheus\"}[5m])",
           "format": "time_series",
@@ -2799,7 +2799,20 @@
     "prometheus"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "prometheus",
+          "value": "cei7zcrm236yod"
+        },
+        "name": "query0",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
@@ -2807,8 +2820,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Prometheus",
-  "uid": "UDdpyzz7Z",
+  "title": "My App Dashboard",
+  "uid": "UDdpyzz7z",
   "version": 3,
   "weekStart": ""
 }

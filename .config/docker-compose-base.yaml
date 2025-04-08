@@ -21,6 +21,7 @@ services:
     volumes:
       - ../dist:/var/lib/grafana/plugins/briancullinan-mycomputer-app
       - ../provisioning:/etc/grafana/provisioning
+        ../dist/dashboards:/etc/grafana/provisioning/dashboards/
       - ..:/root/briancullinan-mycomputer-app
       - ./grafana.db:/var/lib/grafana/grafana.db
 

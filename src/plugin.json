@@ -24,6 +24,17 @@
   },
   "includes": [
     {
+      "name": "My App Dashboard",
+      "path": "dashboards/overview.json",
+      "type": "dashboard"
+    },
+    {
+      "addToNav": true,
+      "name": "My App Dashboard",
+      "path": "d/UDdpyzz7z/my-app-dashboard",
+      "type": "page"
+    },
+    {
       "type": "page",
       "name": "Page One",
       "path": "/a/briancullinan-mycomputer-app/one",
