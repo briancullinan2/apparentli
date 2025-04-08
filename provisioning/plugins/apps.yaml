@@ -6,6 +6,6 @@ apps:
     org_name: 'briancullinan'
     disabled: false
     jsonData:
-      apiUrl: "http://default-url.com"
+      apiUrl: "http://192.168.6.25:9393"
     secureJsonData:
-      apiKey: secret-key
+      apiKey: ""

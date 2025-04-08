@@ -56,12 +56,33 @@ func (a *App) handleEcho(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	a.server = data["apiUrl"].(string)
+	var authToken = pluginCtx.AppInstanceSettings.DecryptedSecureJSONData["apiKey"]
+
+	// Create the HTTP POST request
+	req, err = http.NewRequest("POST", data["apiUrl"].(string), bytes.NewBuffer(payload))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if len(authToken) != 0 {
+		// Set the Authorization header
+		req.Header.Set("Authorization", authToken)
+	}
+
+	// Set the Content-Type header (if sending JSON, for example)
+	req.Header.Set("Content-Type", "application/json")
+
+	// Make the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	
+
 
 	// Forward to remote API
-	resp, err := http.Post(a.server, "application/json", bytes.NewBuffer(payload))
+	//resp, err := http.Post(data["apiUrl"].(string), "application/json", bytes.NewBuffer(payload))
 	if err != nil {
-		http.Error(w, err.Error() + a.server, http.StatusBadGateway)
+		http.Error(w, err.Error() + data["apiUrl"].(string), http.StatusBadGateway)
 		return
 	}
 	defer resp.Body.Close()

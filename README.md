@@ -15,6 +15,11 @@ This template is a starting point for building an app plugin for Grafana.
 
  - added grafana agent file grafana-agent.yaml
 
+ - ran `sqlite3 grafana.db "VACUUM;"`
+
+ - added `- ./grafana.db:/var/lib/grafana/grafana.db` to VOLUMES in docker config
+ 
+
 ## What are Grafana app plugins?
 
 App plugins can let you create a custom out-of-the-box monitoring experience by custom pages, nested data sources and panel plugins.

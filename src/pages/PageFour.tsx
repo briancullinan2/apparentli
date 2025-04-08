@@ -11,6 +11,7 @@ function PageFour() {
   const s = useStyles2(getStyles);
   const [username, setUsername] = useState('');
   const [input, setInput] = useState('');
+  const [responseHtml, setResponseHtml] = useState('');
 
   const sendMessage = async () => {
     debugger
@@ -37,7 +38,10 @@ function PageFour() {
   
       if (!res.ok) {
         console.error('Failed to send message:', await res.text());
+        return
       }
+
+      setResponseHtml(await res.text())
     } catch (err) {
       console.error('Fetch error:', err);
     }
@@ -50,7 +54,7 @@ function PageFour() {
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
       <div className={s.page} data-testid={testIds.pageFour.container}>
-        <div className={s.container}>
+        <div className={s.container} dangerouslySetInnerHTML={{ __html: responseHtml }}>
 
 
         </div>
