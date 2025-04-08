@@ -5,7 +5,8 @@ import { useStyles2 } from '@grafana/ui';
 import { testIds } from '../components/testIds';
 import { PluginPage } from '@grafana/runtime';
 import { UrlSyncContextProvider } from '@grafana/scenes';
-import { getAdvancedTimeRangeComparisonScene } from '../utils/scenes';
+import { AdvancedTimeRangeComparisonScene } from '../utils/scenes';
+import DataSourcePicker from '../utils/data';
 
 function PageFour() {
   const s = useStyles2(getStyles);
@@ -53,12 +54,20 @@ function PageFour() {
     }
   };
 
-  const scene = useMemo(() => getAdvancedTimeRangeComparisonScene(), []);
+  // TODO: pass in data sources from state and make them configurable
+
+  const [selectedDataSource, _] = useState<string | undefined>(undefined);
+
+  const scene = useMemo(() => AdvancedTimeRangeComparisonScene(selectedDataSource), [selectedDataSource]); // second param is dependencies
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
       <div className={s.page} data-testid={testIds.pageFour.container}>
         <div className={s.scene}>
+          <div>
+            <label className={s.query}>query0</label>
+            <DataSourcePicker />
+          </div>
           <UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >
             <scene.Component model={scene} />
           </UrlSyncContextProvider>
@@ -129,5 +138,22 @@ const getStyles = (theme: GrafanaTheme2) => ({
   `,
   scene: css`
     flex: 50%;
+  `,
+  query: css`
+    background: rgb(24, 27, 31);
+    display: inline-block;
+    box-align: center;
+    align-items: center;
+    padding: 0px 8px;
+    font-weight: 500;
+    font-size: 0.857143rem;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 2px;
+    border: 1px solid rgba(204, 204, 220, 0.2);
+    position: relative;
+    right: -1px;
+    white-space: nowrap;
+    gap: 4px;
   `
 });

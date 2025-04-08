@@ -1,3 +1,4 @@
+//import { useState } from 'react';
 import {
   EmbeddedScene,
   SceneFlexLayout,
@@ -10,11 +11,13 @@ import {
   SceneRefreshPicker,
 } from '@grafana/scenes';
 
-export function getAdvancedTimeRangeComparisonScene() {
+export function AdvancedTimeRangeComparisonScene(selectedDataSource?: string) {
+  //const [selectedDataSource, _] = useState<string | undefined>(undefined);
+
   const queryRunner = new SceneQueryRunner({
     datasource: {
       type: 'prometheus',
-      uid: 'cei7zcrm236yod',
+      uid: selectedDataSource,
     },
     queries: [
       {
