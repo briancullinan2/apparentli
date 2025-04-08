@@ -7,7 +7,7 @@ import {
   SceneQueryRunner,
   SceneTimeRange,
   SceneTimePicker,
-  SceneTimeRangeCompare,
+//  SceneTimeRangeCompare,
   SceneRefreshPicker,
 } from '@grafana/scenes';
 
@@ -30,7 +30,7 @@ export function AdvancedTimeRangeComparisonScene(selectedDataSource?: string) {
   const scene = new EmbeddedScene({
     $data: queryRunner,
     $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
-    controls: [new SceneTimePicker({}), new SceneTimeRangeCompare({}), new SceneRefreshPicker({refresh: '5s'})],
+    controls: [new SceneTimePicker({}) /*, new SceneTimeRangeCompare({})*/, new SceneRefreshPicker({refresh: '5s'})],
     body: new SceneFlexLayout({
       direction: 'row',
       children: [

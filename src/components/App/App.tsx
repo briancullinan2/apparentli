@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppRootProps } from '@grafana/data';
-const PageFour = React.lazy(() => import('../../pages/PageFour'));
+const Chat = React.lazy(() => import('../../chat/Chat'));
 
 function App(props: AppRootProps) {
 
@@ -12,7 +12,7 @@ function App(props: AppRootProps) {
 
   return (
     <Routes>
-      <Route path="*" element={<PageFour />} />
+      <Route path="*" element={<Chat />} />
     </Routes>
   );
 }
