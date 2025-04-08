@@ -19,6 +19,12 @@ This template is a starting point for building an app plugin for Grafana.
 
  - added `- ./grafana.db:/var/lib/grafana/grafana.db` to VOLUMES in docker config
  
+## TODO
+
+ - fix template variables for colors
+
+ 
+
 
 ## What are Grafana app plugins?
 

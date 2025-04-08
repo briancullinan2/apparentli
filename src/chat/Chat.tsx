@@ -13,7 +13,8 @@ function PageFour() {
   //const [responseHtml, setResponseHtml] = useState('');
   const [messages, setMessages] = useState<React.JSX.Element[]>([])
   const [messagesFinal, setMessagesFinal] = useState<React.JSX.Element[]>([])
-  const [selectedDataSource, setSelectedDataSource] = useState<string | undefined>(undefined);
+  const [selectedDataSource, setSelectedDataSource] = useState<string[]>([]);
+  const [selectedGraph, setSelectedGraph] = useState<string[]>([]);
 
   const handleSend = () => {
     sendMessage(input, setMessages, setInput, s)
@@ -26,9 +27,22 @@ function PageFour() {
   };
 
   // TODO: pass in data sources from state and make them configurable
-  useEffect(() => {
-    setMessagesFinal(prev => generateMessages(messages, s, selectedDataSource, setSelectedDataSource))
-  }, [selectedDataSource, messages, s])
+  useEffect(() => { // useMemo(() => 
+    setMessagesFinal(prev => {
+      let newMessages: React.JSX.Element[] = []
+      for (let i = 0; i < messages.length; i++) {
+        let result = generateMessages(messages[i], i, s, selectedDataSource[i] ? selectedDataSource[i] : '', ((i: number, value: string) => setSelectedDataSource(prev => {
+          prev[i] = value
+          return Array.from(prev)
+        })).bind(null, i), selectedGraph[i] ? selectedGraph[i] : '', ((i: number, value: string) => setSelectedGraph(prev => {
+          prev[i] = value
+          return Array.from(prev)
+        })).bind(null, i))
+        newMessages.push(...result)
+      }
+      return newMessages
+    })
+  }, [selectedDataSource, selectedGraph, messages, s])
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
