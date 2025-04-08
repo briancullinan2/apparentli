@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, PageLayoutType } from '@grafana/data';
 import { useStyles2 } from '@grafana/ui';
@@ -12,7 +12,10 @@ function PageFour() {
   const s = useStyles2(getStyles);
   const [username] = useState('');
   const [input, setInput] = useState('');
-  const [responseHtml, setResponseHtml] = useState('');
+  //const [responseHtml, setResponseHtml] = useState('');
+  const [messages, setMessages] = useState<React.JSX.Element[]>([])
+  const [messagesFinal, setMessagesFinal] = useState<React.JSX.Element[]>([])
+  const [selectedDataSource, setSelectedDataSource] = useState<string | undefined>(undefined);
 
   const sendMessage = async () => {
     if (!input.trim()) {
@@ -25,7 +28,7 @@ function PageFour() {
       time: new Date().toLocaleTimeString(),
     };
 
-    //setMessages(prev => [...prev, message]);
+    setMessages(prev => [...prev, (<div className={s.mine} key={prev.length}>{message.text}</div>)]);
     setInput('');
 
     try {
@@ -42,7 +45,9 @@ function PageFour() {
         return
       }
 
-      setResponseHtml(await res.text())
+      let responseHTML = await res.text()
+      setMessages(prev => [...prev, (<div className={s.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseHTML }}></div>)])
+      addScene()
     } catch (err) {
       console.error('Fetch error:', err);
     }
@@ -55,24 +60,38 @@ function PageFour() {
   };
 
   // TODO: pass in data sources from state and make them configurable
-
-  const [selectedDataSource, setSelectedDataSource] = useState<string | undefined>(undefined);
-
   const scene = useMemo(() => AdvancedTimeRangeComparisonScene(selectedDataSource), [selectedDataSource]); // second param is dependencies
+  useEffect(() => {
+    setMessagesFinal(prev => {
+      const newMessages: React.JSX.Element[] = []
+
+      for(let i = 0; i < messages.length; i++) {
+        if(messages[i].props.className == s.mine) {
+          newMessages.push(messages[i])
+        } else if (messages[i].props.className == s.theirs) {
+          newMessages.push(messages[i])
+          newMessages.push((
+            <div key={messages.length} className={s.scene}>
+              <div>
+                <label className={s.query}>query0</label>
+                <DataSourcePicker onSelect={setSelectedDataSource} />
+              </div><UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >
+                <scene.Component model={scene} />
+              </UrlSyncContextProvider>
+            </div>
+          ))
+        } else if (messages[i].props.className == s.scene) {
+          
+        }
+      }
+      return newMessages
+    })
+  }, [selectedDataSource, messages])
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
       <div className={s.page} data-testid={testIds.pageFour.container}>
-        <div className={s.scene}>
-          <div>
-            <label className={s.query}>query0</label>
-            <DataSourcePicker onSelect={setSelectedDataSource} />
-          </div>
-          <UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >
-            <scene.Component model={scene} />
-          </UrlSyncContextProvider>
-        </div>
-        <div className={s.container} dangerouslySetInnerHTML={{ __html: responseHtml }}></div>
+        <div className={s.container}>{messagesFinal}</div>
         <div className={s.footer}>
           <div className={s.inputs}>
             <input
@@ -138,6 +157,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
   `,
   scene: css`
     flex: 50%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
   `,
   query: css`
     background: rgb(24, 27, 31);
@@ -155,5 +177,11 @@ const getStyles = (theme: GrafanaTheme2) => ({
     right: -1px;
     white-space: nowrap;
     gap: 4px;
+  `,
+  mine: css`
+    z-index: 1;
+  `,
+  theirs: css`
+    z-index: 2;
   `
 });
