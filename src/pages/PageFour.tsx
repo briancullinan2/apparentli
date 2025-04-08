@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, PageLayoutType } from '@grafana/data';
-import { LinkButton, useStyles2 } from '@grafana/ui';
-import { ROUTES } from '../constants';
-import { prefixRoute } from '../utils/utils.routing';
+import { useStyles2 } from '@grafana/ui';
 import { testIds } from '../components/testIds';
 import { PluginPage } from '@grafana/runtime';
 
 function PageFour() {
   const s = useStyles2(getStyles);
-  const [username, setUsername] = useState('');
+  const [username] = useState('');
   const [input, setInput] = useState('');
   const [responseHtml, setResponseHtml] = useState('');
 
   const sendMessage = async () => {
-    debugger
-
-    if (!input.trim()) return;
+    if (!input.trim()) {
+      return;
+    }
 
     const message = {
       user: username,
@@ -47,8 +45,10 @@ function PageFour() {
     }
   };
 
-  const handleKeyPress = async (e) => {
-    if (e.key === 'Enter') await sendMessage();
+  const handleKeyPress = async (e: any) => {
+    if (e.key === 'Enter') {
+      await sendMessage();
+    }
   };
 
   return (
