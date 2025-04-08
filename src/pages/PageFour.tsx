@@ -56,7 +56,7 @@ function PageFour() {
 
   // TODO: pass in data sources from state and make them configurable
 
-  const [selectedDataSource, _] = useState<string | undefined>(undefined);
+  const [selectedDataSource, setSelectedDataSource] = useState<string | undefined>(undefined);
 
   const scene = useMemo(() => AdvancedTimeRangeComparisonScene(selectedDataSource), [selectedDataSource]); // second param is dependencies
 
@@ -66,7 +66,7 @@ function PageFour() {
         <div className={s.scene}>
           <div>
             <label className={s.query}>query0</label>
-            <DataSourcePicker />
+            <DataSourcePicker onSelect={setSelectedDataSource} />
           </div>
           <UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >
             <scene.Component model={scene} />

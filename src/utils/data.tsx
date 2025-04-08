@@ -4,7 +4,11 @@ import { useStyles2, Select } from '@grafana/ui'; // Grafana's UI components
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 
-const DataSourcePicker: React.FC = () => {
+type DataSourcePickerProps = {
+  onSelect: (text: string) => void; // Use camelCase for the prop name
+};
+
+const DataSourcePicker: React.FC<DataSourcePickerProps> = ({onSelect}) => {
   const s = useStyles2(getStyles);
 
   const [dataSources, setDataSources] = useState<any[]>([]);
@@ -21,12 +25,15 @@ const DataSourcePicker: React.FC = () => {
 
   const handleDataSourceChange = (value: SelectableValue<string>) => {
     setSelectedDataSource(value.value);
+    if(onSelect && value.value) {
+      onSelect(value.value)
+    }
   };
 
   return (
     <div className={s.page}>
       <Select
-        options={dataSources.map(ds => ({ label: ds.name, value: ds.id }))}
+        options={dataSources.map(ds => ({ label: ds.name, value: ds.uid }))}
         value={selectedDataSource}
         onChange={handleDataSourceChange}
       />
