@@ -47,7 +47,6 @@ function PageFour() {
 
       let responseHTML = await res.text()
       setMessages(prev => [...prev, (<div className={s.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseHTML }}></div>)])
-      addScene()
     } catch (err) {
       console.error('Fetch error:', err);
     }
@@ -66,9 +65,9 @@ function PageFour() {
       const newMessages: React.JSX.Element[] = []
 
       for(let i = 0; i < messages.length; i++) {
-        if(messages[i].props.className == s.mine) {
+        if(messages[i].props.className === s.mine) {
           newMessages.push(messages[i])
-        } else if (messages[i].props.className == s.theirs) {
+        } else if (messages[i].props.className === s.theirs) {
           newMessages.push(messages[i])
           newMessages.push((
             <div key={messages.length} className={s.scene}>
@@ -80,13 +79,13 @@ function PageFour() {
               </UrlSyncContextProvider>
             </div>
           ))
-        } else if (messages[i].props.className == s.scene) {
+        } else if (messages[i].props.className === s.scene) {
           
         }
       }
       return newMessages
     })
-  }, [selectedDataSource, messages])
+  }, [selectedDataSource, messages, s, scene])
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
@@ -120,6 +119,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     justify-content: center;
     height: 100%;
     flex-direction: column;
+    margin-bottom: 72px;
   `,
   container: css`
     width: 100%;
@@ -136,6 +136,11 @@ const getStyles = (theme: GrafanaTheme2) => ({
     flex-direction: column;
     padding: 10px;
     border-top: 1px solid #ccc;
+    position: fixed;
+    bottom: 0;
+    background: rgb(34, 37, 43);
+    left: 300px;
+    right: 0;
   `,
   inputs: css`
     display: flex;
