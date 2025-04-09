@@ -1,23 +1,36 @@
-import { SceneComponentProps, SceneObjectBase, SceneObjectState } from "@grafana/scenes";
+import { SceneComponentProps, SceneFlexItem, SceneFlexLayout, SceneObjectBase, SceneObjectState } from "@grafana/scenes";
 import { useStyles2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import VisualizationPicker from './graph';
 import React from "react";
+import getBuilder from './builder'
 
 export interface PanelState extends SceneObjectState {
   graph: string;
   query: string;
+  setGraph?: (graph: string) => void
+  getLayout?: () => SceneFlexLayout
+  sceneItem?: SceneFlexItem 
 }
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
-  const { graph } = model.useState()
+  const { graph, sceneItem } = model.useState()
   const s = useStyles2(controlStyles)
+
+  function onChange(graph: string) {
+    model.setGraph(graph)
+    if (sceneItem) {
+      sceneItem.setState({
+        body: getBuilder(graph).build()
+      })
+    }
+  }
 
   return (
     <div>
       <label className={s.query}>Visualization</label>
-      <VisualizationPicker init={graph} onSelect={model.setGraph} />
+      <VisualizationPicker init={graph} onSelect={onChange} />
     </div>
   );
 }

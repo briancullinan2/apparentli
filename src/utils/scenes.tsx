@@ -6,9 +6,9 @@ import {
   //  PanelBuilders,
   SceneQueryRunner,
   SceneTimeRange,
-  SceneTimePicker,
+//  SceneTimePicker,
   //  SceneTimeRangeCompare,
-  SceneRefreshPicker,
+//  SceneRefreshPicker,
   VizPanelBuilder,
 } from '@grafana/scenes';
 import getBuilder from './builder'
@@ -69,25 +69,28 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
   //console.log(lastValueFrom(result))
 
   const scene = new EmbeddedScene({
-    controls: [new SceneTimePicker({}) /*, new SceneTimeRangeCompare({})*/, new SceneRefreshPicker({ refresh: '5s' })],
+    //controls: [new SceneTimePicker({}) /*, new SceneTimeRangeCompare({})*/, new SceneRefreshPicker({ refresh: '5s' })],
     body: new SceneFlexLayout({
       direction: 'row',
       children: queryRunners.map(({ queryRunner, selectedBuilder, title, graph }) => {
         selectedBuilder.setTitle(title)
+        let sceneItem = new SceneFlexItem({
+          $data: queryRunner,
+          $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
+          width: '100%',
+          height: '100%',
+          body: selectedBuilder.build(),
+        })
         //selectedBuilder.setHeaderActions()
-        return new SceneFlexLayout({
+        let newLayout: SceneFlexLayout = new SceneFlexLayout({
           direction: 'column',
           children: [
-            new Controls({graph: graph}),
-            new SceneFlexItem({
-              $data: queryRunner,
-              $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
-              width: '100%',
-              height: '100%',
-              body: selectedBuilder.build(),
-            })
+            new Controls({graph: graph, sceneItem: sceneItem}),
+            sceneItem
           ]
         })
+
+        return newLayout
       })
     })
   });
