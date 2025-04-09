@@ -42,9 +42,11 @@ function Chat() {
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
       <div className={ChatStyles.page} data-testid={testIds.pageFour.container}>
-        {useMemo(() => (<div className={ChatStyles.container}>
-          <Messages styles={MessageStyles} messages={messagesFinal} messagesPlain={messagesPlain} />
-        </div>), [messagesFinal])}
+        <div className={ChatStyles.container}>
+          {useMemo(() => (
+            <Messages styles={MessageStyles} messages={messagesFinal} messagesPlain={messagesPlain} />
+          ), [messagesFinal, MessageStyles, messagesPlain])}
+        </div>
         <div className={ChatStyles.footer}>
           <div className={ChatStyles.inputs}>
             <input
