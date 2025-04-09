@@ -6,8 +6,9 @@ import { PluginPage } from '@grafana/runtime';
 import messageStyles from '../styles'
 import generateMessages from '../utils/message'
 import sendMessage from '../utils/send'
+import AdvancedScene from '../utils/scenes';
 
-function PageFour() {
+function Chat() {
   const s = useStyles2(messageStyles);
   const [input, setInput] = useState('');
   //const [responseHtml, setResponseHtml] = useState('');
@@ -15,8 +16,8 @@ function PageFour() {
   const [messagesPlain, setMessagesPlain] = useState<string[]>([])
   const [_, setMessagesJson] = useState<any[]>([])
   const [messagesFinal, setMessagesFinal] = useState<React.JSX.Element[]>([])
-  const [selectedDataSource, setSelectedDataSource] = useState<string[]>([]);
-  const [selectedGraph, setSelectedGraph] = useState<string[]>([]);
+  //const [selectedDataSource, _2] = useState<string[]>([]);
+  //const [selectedGraph, setSelectedGraph] = useState<string[]>([]);
   //const [dataRefs, setDataRef] = useState<MutableRefObject<React.JSX.Element>[]>([]);
 
   const handleSend = () => {
@@ -34,18 +35,16 @@ function PageFour() {
     setMessagesFinal(prev => {
       let newMessages: React.JSX.Element[] = []
       for (let i = 0; i < messages.length; i++) {
-        let result = generateMessages(messages[i], i, s, selectedDataSource[i] ? selectedDataSource[i] : '', ((i: number, value: string) => setSelectedDataSource(prev => {
+        let scene = AdvancedScene(messagesPlain[i], '' /*selectedDataSource[i] , selectedGraph[i]*/)
+        let result = generateMessages(messages[i], i, s, ((i: number, value: string) => {} /* setSelectedDataSource(prev => {
           prev[i] = value
           return Array.from(prev)
-        })).bind(null, i), selectedGraph[i] ? selectedGraph[i] : '', ((i: number, value: string) => setSelectedGraph(prev => {
-          prev[i] = value
-          return Array.from(prev)
-        })).bind(null, i), messagesPlain[i])
+        })*/).bind(null, i), scene)
         newMessages.push(...result)
       }
       return newMessages
     })
-  }, [selectedDataSource, selectedGraph, messagesPlain, messages, s])
+  }, [messagesPlain, messages, s])
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
@@ -69,4 +68,4 @@ function PageFour() {
   );
 }
 
-export default PageFour;
+export default Chat;

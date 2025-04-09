@@ -5,7 +5,7 @@ import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 
 type VisualizationPickerProps = {
-  onSelect: (text: string) => void; // Use camelCase for the prop name
+  onSelect?: (text: string) => void; // Use camelCase for the prop name
 };
 
 const VisualizationPicker: React.FC<VisualizationPickerProps> = ({onSelect}) => {

@@ -62,7 +62,7 @@ async function sendMessage(input: string,
   let prometheus = sources.filter(source => source.name === 'prometheus')
 
   let metrics = await performQuery('{__name__!=""}', prometheus[0].uid, 'table')
-  let metricNames = metrics.map((metric: any) => metric.schema.fields[1].name).filter((a: string, i: number, arr: string[]) => arr.indexOf(a) == i)
+  let metricNames = metrics.map((metric: any) => metric.schema.fields[1].name).filter((a: string, i: number, arr: string[]) => arr.indexOf(a) === i)
   console.log(metricNames)
 
   let relevantMetrics = []
@@ -89,8 +89,6 @@ async function sendMessage(input: string,
 
   console.log(relevantMetrics)
 
-  debugger
-
   //await openai.enabled()
   const stream = openai
     .chatCompletions({
@@ -101,7 +99,7 @@ async function sendMessage(input: string,
           role: 'user', content:
             'List of relevant metrics:\n' + 
             relevantMetrics.join('\n') + 
-            'Available PromQL functions:\n' +
+            '\nAvailable PromQL functions:\n' +
             PromQL.join('\n') +
             '\nAvailable graph types:\n' +
             uids.join('\n') +
