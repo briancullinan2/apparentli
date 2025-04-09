@@ -1,70 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PageLayoutType } from '@grafana/data';
-import { useStyles2 } from '@grafana/ui';
 import { testIds } from '../components/testIds';
 import { PluginPage } from '@grafana/runtime';
-import messageStyles from '../styles'
-import generateMessages from '../utils/message'
+import chatStyles from '../styles/chat'
 import sendMessage from '../utils/send'
-import AdvancedScene from '../utils/scenes';
+import Messages from '../utils/message';
+import messageStyles from '../styles/message'
+import { useStyles2 } from '@grafana/ui';
 
 function Chat() {
-  const s = useStyles2(messageStyles);
+  const MessageStyles = useStyles2(messageStyles)
+  const ChatStyles = useStyles2(chatStyles)
   const [input, setInput] = useState('');
   //const [responseHtml, setResponseHtml] = useState('');
   const [messages, setMessages] = useState<React.JSX.Element[]>([
-    <div className={s.theirs} key={0} dangerouslySetInnerHTML={{ __html: '[ {"graph": "stat", "query": "up", "title": "Target Status"}, {"graph": "time", "query": "rate(prometheus_http_requests_total[5m])", "title": "Prometheus HTTP Request Rate"}, {"graph": "time", "query": "scrape_duration_seconds", "title": "Scrape Duration"} ]' }}></div>
+    <div className={MessageStyles.theirs} key={0} dangerouslySetInnerHTML={{ __html: '[ {"graph": "stat", "query": "up", "title": "Target Status"}, {"graph": "time", "query": "rate(prometheus_http_requests_total[5m])", "title": "Prometheus HTTP Request Rate"}, {"graph": "time", "query": "scrape_duration_seconds", "title": "Scrape Duration"} ]' }}></div>
   ])
   const [messagesPlain, setMessagesPlain] = useState<string[]>([
     '[ {"graph": "stat", "query": "up", "title": "Target Status"}, {"graph": "time", "query": "rate(prometheus_http_requests_total[5m])", "title": "Prometheus HTTP Request Rate"}, {"graph": "time", "query": "scrape_duration_seconds", "title": "Scrape Duration"} ]'
   ])
   const [_, setMessagesJson] = useState<any[]>([])
   const [messagesFinal, setMessagesFinal] = useState<React.JSX.Element[]>([])
-  const [selectedDataSource, setSelectedDataSource] = useState<string[]>([]);
   //const [selectedGraph, setSelectedGraph] = useState<string[]>([]);
   //const [dataRefs, setDataRef] = useState<MutableRefObject<React.JSX.Element>[]>([]);
 
   const handleSend = () => {
-    sendMessage(input, setMessages, setMessagesPlain, setMessagesJson, setInput, s)
+    sendMessage(input, setMessages, setMessagesPlain, setMessagesJson, setInput, MessageStyles)
   }
 
   const handleKeyPress = async (e: any) => {
     if (e.key === 'Enter') {
-      await sendMessage(input, setMessages, setMessagesPlain, setMessagesJson, setInput, s);
+      await sendMessage(input, setMessages, setMessagesPlain, setMessagesJson, setInput, MessageStyles);
     }
   };
 
   // TODO: pass in data sources from state and make them configurable
   useEffect(() => { // useMemo(() => 
-    setMessagesFinal(prev => {
-      let newMessages: React.JSX.Element[] = []
-      for (let i = 0; i < messages.length; i++) {
-        let scene = AdvancedScene(messagesPlain[i], selectedDataSource[i] /*, selectedGraph[i]*/)
-        let result = generateMessages(messages[i], i, s, ((i: number, value: string) => setSelectedDataSource(prev => {
-          prev[i] = value
-          return Array.from(prev)
-        })).bind(null, i), scene)
-        newMessages.push(...result)
-      }
-      return newMessages
-    })
-  }, [selectedDataSource, messagesPlain, messages, s])
+    setMessagesFinal(messages)
+  }, [messagesPlain, messages])
 
   return (
     <PluginPage layout={PageLayoutType.Canvas}>
-      <div className={s.page} data-testid={testIds.pageFour.container}>
-        <div className={s.container}>{messagesFinal}</div>
-        <div className={s.footer}>
-          <div className={s.inputs}>
+      <div className={ChatStyles.page} data-testid={testIds.pageFour.container}>
+        {useMemo(() => (<div className={ChatStyles.container}>
+          <Messages styles={MessageStyles} messages={messagesFinal} messagesPlain={messagesPlain} />
+        </div>), [messagesFinal])}
+        <div className={ChatStyles.footer}>
+          <div className={ChatStyles.inputs}>
             <input
-              className={s.input}
+              className={ChatStyles.input}
               type="text"
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
             />
-            <button onClick={handleSend} className={s.button}>Send</button>
+            <button onClick={handleSend} className={ChatStyles.button}>Send</button>
           </div>
         </div>
       </div>

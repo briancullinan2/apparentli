@@ -43,7 +43,7 @@ async function sendMessage(input: string,
   setMessagesPlain: { (value: SetStateAction<string[]>): void; (arg0: { (prev: any): string[]; }): void; },
   setMessagesJson: { (value: SetStateAction<any[]>): void; (arg0: { (prev: any): any[]; }): void; },
   setInput: ((arg0: string) => void),
-  s: { mine: string | undefined; theirs: string | undefined; }
+  MessageStyles: {mine: string, theirs: string, scene: string, query: string}
 ) {
   if (!input.trim()) {
     return;
@@ -54,7 +54,7 @@ async function sendMessage(input: string,
     time: new Date().toLocaleTimeString(),
   };
 
-  setMessages(prev => [...prev, (<div data-message={message} className={s.mine} key={prev.length}>{message.text}</div>)]);
+  setMessages(prev => [...prev, (<div data-message={message} className={MessageStyles.mine} key={prev.length}>{message.text}</div>)]);
   setMessagesPlain(prev => [...prev, message.text]);
   setInput('');
 
@@ -119,7 +119,7 @@ async function sendMessage(input: string,
   // Subscribe to the stream and update the state for each returned value.
   let responseObject = (await stream).object;
 
-  setMessages(prev => [...prev, (<div className={s.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseObject }}></div>)])
+  setMessages(prev => [...prev, (<div className={MessageStyles.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseObject }}></div>)])
   setMessagesPlain(prev => [...prev, responseObject]);
   /*
 try {
