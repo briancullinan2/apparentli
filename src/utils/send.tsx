@@ -1,4 +1,5 @@
 import React, { SetStateAction, JSX } from "react";
+import { openai } from '@grafana/llm';
 
 
 async function sendMessage(input: string,
@@ -18,6 +19,21 @@ async function sendMessage(input: string,
   setMessages(prev => [...prev, (<div className={s.mine} key={prev.length}>{message.text}</div>)]);
   setInput('');
 
+  await openai.enabled()
+  const stream = openai
+      .chatCompletions({
+        // model: openai.Model.LARGE, // defaults to BASE, use larger model for longer context and complex tasks
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant with deep knowledge of the Grafana, Prometheus and general observability ecosystem.' },
+          { role: 'user', content: input.trim() },
+        ],
+      })
+  
+    // Subscribe to the stream and update the state for each returned value.
+    let responseObject = (await stream).object;
+
+    setMessages(prev => [...prev, (<div className={s.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseObject }}></div>)])
+  /*
   try {
     const res = await fetch('/api/plugins/briancullinan-mycomputer-app/resources/echo', {
       method: 'POST',
@@ -37,6 +53,9 @@ async function sendMessage(input: string,
   } catch (err) {
     console.error('Fetch error:', err);
   }
+    */
+
+
 }
 
 export default sendMessage
