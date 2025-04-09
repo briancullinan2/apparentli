@@ -67,7 +67,7 @@ const VisualizationPicker: React.FC<VisualizationPickerProps> = ({init, onSelect
 const getStyles = (theme: GrafanaTheme2) => ({
   page: css`
     visibility: visible;
-    flex: 1 1 auto;
+    /* flex: 1 1 auto; */
     display: inline-block;
     grid-area: 1 / 1 / 2 / 3;
     grid-template-columns: 0px min-content;

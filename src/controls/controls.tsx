@@ -5,14 +5,27 @@ import { GrafanaTheme2 } from '@grafana/data';
 import VisualizationPicker from './graph';
 import React from "react";
 import getBuilder from '../services/builder'
+//import RefreshPicker from "./refresh";
 
 export interface PanelState extends SceneObjectState {
   graph: string;
   query: string;
+  refresh: number;
   setGraph?: (graph: string) => void
   getLayout?: () => SceneFlexLayout
-  sceneItem?: SceneFlexItem 
+  sceneItem?: SceneFlexItem
 }
+
+/*
+import { locationService } from '@grafana/runtime';
+locationService.push({
+  query: {
+    'refresh': '5s',
+  },
+  partial: true,
+  replace: true,
+});
+*/
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
   const { graph, sceneItem } = model.useState()
@@ -28,14 +41,24 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
   }
 
   return (
-    <div>
+    <div className={s.tools}>
       <label className={s.query}>Visualization</label>
       <VisualizationPicker init={graph} onSelect={onChange} />
+
     </div>
   );
 }
+/*
+      <label className={s.query}>Refresh</label>
+      <RefreshPicker onSelect={onRefreshChange} value={refresh} />
+*/
+
 
 const controlStyles = (theme: GrafanaTheme2) => ({
+  tools: css`
+    display: flex;
+    flex-wrap: wrap;
+  `,
   query: css`
     background: rgb(24, 27, 31);
     display: inline-block;
@@ -59,7 +82,7 @@ export class Controls extends SceneObjectBase<PanelState> {
   static Component = ControlsRenderer;
 
   public constructor(state?: Partial<PanelState>) {
-    super({ graph: '', query: '', ...state });
+    super({ graph: '', query: '', refresh: 0, ...state });
   }
 
   public setGraph = (value: string) => {
