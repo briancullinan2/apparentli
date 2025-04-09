@@ -5,14 +5,15 @@ import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 
 type VisualizationPickerProps = {
+  init?: string
   onSelect?: (text: string) => void; // Use camelCase for the prop name
 };
 
-const VisualizationPicker: React.FC<VisualizationPickerProps> = ({onSelect}) => {
+const VisualizationPicker: React.FC<VisualizationPickerProps> = ({init, onSelect}) => {
   const s = useStyles2(getStyles);
 
   const [dataSources, setDataSources] = useState<any[]>([]);
-  const [selectedGraph, setSelectedGraph] = useState<string | undefined>(undefined);
+  const [selectedGraph, setSelectedGraph] = useState<string | undefined>(init);
 
   useEffect(() => {
     async function fetchDataSources() {

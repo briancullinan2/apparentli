@@ -1,5 +1,4 @@
 //import { useState } from 'react';
-import React from 'react';
 import {
   EmbeddedScene,
   SceneFlexLayout,
@@ -13,35 +12,13 @@ import {
   VizPanelBuilder,
 } from '@grafana/scenes';
 import getBuilder from './builder'
-import { useStyles2 } from '@grafana/ui';
-import { css } from '@emotion/css';
-import { GrafanaTheme2 } from '@grafana/data';
-import VisualizationPicker from './graph';
+import { Controls } from './controls';
 //import performQuery from '../utils/query'
 //import { lastValueFrom } from 'rxjs';
 
 function AdvancedScene(queryText: string, selectedDataSource: string /*, selectedGraph: string */) {
   //const [_, setSelectedGraph] = useState<string>('')
   //const [selectedDataSource, _] = useState<string | undefined>(undefined);
-  const s = useStyles2((theme: GrafanaTheme2) => ({
-    query: css`
-      background: rgb(24, 27, 31);
-      display: inline-block;
-      box-align: center;
-      align-items: center;
-      padding: 0px 8px;
-      font-weight: 500;
-      font-size: 0.857143rem;
-      height: 32px;
-      line-height: 32px;
-      border-radius: 2px;
-      border: 1px solid rgba(204, 204, 220, 0.2);
-      position: relative;
-      right: -1px;
-      white-space: nowrap;
-      gap: 4px;
-    `
-  }));
 
   let queries = [{ query: queryText, graph: '', title: '' }]
   try {
@@ -56,7 +33,7 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
     placement: 'bottom', // or 'right'
   })*/
 
-  const queryRunners = queries.map((query): { queryRunner: SceneQueryRunner; selectedBuilder: VizPanelBuilder<any, any>; title: string; } => ({
+  const queryRunners = queries.map((query): { queryRunner: SceneQueryRunner; selectedBuilder: VizPanelBuilder<any, any>; title: string; graph: string; } => ({
     queryRunner: new SceneQueryRunner({
       datasource: {
         type: 'prometheus',
@@ -83,7 +60,8 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
       ]
     }),
     selectedBuilder: getBuilder(query.graph),
-    title: query.title
+    title: query.title,
+    graph: query.graph,
   }));
 
   //performQuery('rate(prometheus_http_requests_total{handler=~"/metrics"}[5m])', selectedDataSource)
@@ -94,18 +72,21 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
     controls: [new SceneTimePicker({}) /*, new SceneTimeRangeCompare({})*/, new SceneRefreshPicker({ refresh: '5s' })],
     body: new SceneFlexLayout({
       direction: 'row',
-      children: queryRunners.map(({ queryRunner, selectedBuilder, title }) => {
+      children: queryRunners.map(({ queryRunner, selectedBuilder, title, graph }) => {
         selectedBuilder.setTitle(title)
-        selectedBuilder.setHeaderActions(<div>
-          <label className={s.query}>Visualization</label>
-          <VisualizationPicker />
-        </div>)
-        return new SceneFlexItem({
-          $data: queryRunner,
-          $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
-          width: '100%',
-          height: '100%',
-          body: selectedBuilder.build(),
+        //selectedBuilder.setHeaderActions()
+        return new SceneFlexLayout({
+          direction: 'column',
+          children: [
+            new Controls({graph: graph}),
+            new SceneFlexItem({
+              $data: queryRunner,
+              $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
+              width: '100%',
+              height: '100%',
+              body: selectedBuilder.build(),
+            })
+          ]
         })
       })
     })
