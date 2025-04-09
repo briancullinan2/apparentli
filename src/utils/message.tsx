@@ -12,6 +12,9 @@ function generateMessages(
   setSelectedDataSource: ((text: string) => void),
   selectedGraph: string,
   setSelectedGraph: ((text: string) => void),
+  plainText: string,
+//  dataRef: MutableRefObject<React.JSX.Element>,
+//  setDataRef: ((ref: MutableRefObject<React.JSX.Element>) => void),
 ): React.JSX.Element[] {
   const newMessages: React.JSX.Element[] = []
 
@@ -19,7 +22,7 @@ function generateMessages(
     newMessages.push(message)
   } else if (message.props.className === s.theirs) {
     newMessages.push(message)
-    let scene: EmbeddedScene = AdvancedScene(selectedDataSource, selectedGraph)
+    let scene: EmbeddedScene = AdvancedScene(plainText, selectedDataSource, selectedGraph)
     newMessages.push((
       <div key={index} className={s.scene}>
         <div>

@@ -1,7 +1,7 @@
-import { PanelBuilders } from '@grafana/scenes';
+import { PanelBuilders, VizPanelBuilder } from '@grafana/scenes';
 
 
-function getBuilder (selectedGraph: string) {
+function getBuilder (selectedGraph: string): VizPanelBuilder<any, any> {
   let selectedBuilder
   switch (selectedGraph) {
     case 'bar':

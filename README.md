@@ -23,7 +23,7 @@ This template is a starting point for building an app plugin for Grafana.
 
  - fix template variables for colors
 
- - make advanced scene builder more advanced by automatically arranging graphs based on description, i.e. grid, all on one row, two rows, etc
+ - make advanced scene builder more advanced by automatically arranging graphs based on description, i.e. grid, all on one row, two rows, list of graphs, etc
 
  - make expr available with an editable query box
 
