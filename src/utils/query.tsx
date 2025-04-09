@@ -1,7 +1,7 @@
 import { getBackendSrv, getDataSourceSrv, getAppEvents } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
-async function performQuery(text: string, selectedDataSource: string) {
+async function performQuery(text: string, selectedDataSource: string, format?: string) {
   const ds = await getDataSourceSrv().get(selectedDataSource);
   const appEvents = getAppEvents();
   try {
@@ -9,15 +9,18 @@ async function performQuery(text: string, selectedDataSource: string) {
       method: 'POST',
       url: 'api/ds/query',
       data: {
+        from: (Date.now() - 60 * 60) + '',
+        to: Date.now() + '',
         queries: [
           {
             datasourceId: ds.id,
-            refId: '1',
+            refId: 'A',
+            format: format ? format : 'time_series',
             datasource: {
               type: 'prometheus',
               uid: selectedDataSource,
             },
-            expr: 'rate(prometheus_http_requests_total{handler=~"/metrics"}[5m])',
+            expr: text,
           }
         ],
       },
@@ -31,6 +34,9 @@ async function performQuery(text: string, selectedDataSource: string) {
       type: 'success',
       payload: [text + ': ' + resp.status + ' (' + resp.statusText + ')'],
     });
+
+    return (resp.data as any).results.A.frames
+
   } catch (error: any) {
     appEvents.publish({
       type: 'error',

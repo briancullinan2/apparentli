@@ -40,7 +40,7 @@ export function AdvancedScene(queryText: string, selectedDataSource: string, sel
       // TODO: generate query from LLM
       queries: [
         {
-          //  format: 'table',
+          format: query.graph === 'table' || query.graph === 'logs' ? 'table' : (query.graph === 'heatmap' ? 'heatmap' : 'time_series'),
           refId: 'A',
           //  expr: '{__name__=~"agent_.+"}' 
           expr: query.query,
