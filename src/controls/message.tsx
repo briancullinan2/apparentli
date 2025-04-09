@@ -24,7 +24,7 @@ function generateMessage(
     newMessages.push((
       <div key={index} className={MessageStyles.scene}>
         <div>
-          <label className={MessageStyles.query}>query0</label>
+          <label className={MessageStyles.query}>Data source</label>
           <DataSourcePicker onSelect={setSelectedDataSource} />
         </div>
         <UrlSyncContextProvider scene={scene} updateUrlOnInit={true} createBrowserHistorySteps={true} >

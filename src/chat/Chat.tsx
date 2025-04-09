@@ -3,8 +3,8 @@ import { PageLayoutType } from '@grafana/data';
 import { testIds } from '../components/testIds';
 import { PluginPage } from '@grafana/runtime';
 import chatStyles from '../styles/chat'
-import sendMessage from '../utils/send'
-import Messages from '../utils/message';
+import sendMessage from '../services/send'
+import Messages from '../controls/message';
 import messageStyles from '../styles/message'
 import { useStyles2 } from '@grafana/ui';
 

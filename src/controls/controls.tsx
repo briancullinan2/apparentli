@@ -4,7 +4,7 @@ import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import VisualizationPicker from './graph';
 import React from "react";
-import getBuilder from './builder'
+import getBuilder from '../services/builder'
 
 export interface PanelState extends SceneObjectState {
   graph: string;

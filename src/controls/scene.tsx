@@ -11,7 +11,7 @@ import {
 //  SceneRefreshPicker,
   VizPanelBuilder,
 } from '@grafana/scenes';
-import getBuilder from './builder'
+import getBuilder from '../services/builder'
 import { Controls } from './controls';
 //import performQuery from '../utils/query'
 //import { lastValueFrom } from 'rxjs';
