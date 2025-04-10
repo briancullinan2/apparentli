@@ -3,8 +3,7 @@ import React from 'react';
 import { useStyles2, Select, ActionMeta } from '@grafana/ui'; // Grafana's UI components
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
-import { SceneFlexItem, SceneQueryRunner } from '@grafana/scenes';
-import getBuilder from 'services/builder';
+import { SceneFlexItem, SceneQueryRunner, SceneTimeRange } from '@grafana/scenes';
 
 interface RefreshPickerProps {
   value?: number
@@ -103,6 +102,22 @@ class RefreshPicker extends React.Component<RefreshPickerProps> {
     clearTimeout(this.timer);
   }
 
+  forceRefresh = () => {
+    if(this.state.query) {
+      this.state.query.runQueries()
+    }
+    //if (this.state.scene) {
+    //  this.state.scene.forceRender()
+    //}
+    if (this.state.scene) {
+      this.state.scene.setState({
+        $data: this.state.query,
+        $timeRange: new SceneTimeRange({ from: 'now-30m', to: 'now' }),
+        //body: getBuilder(this.state.graph || '').setTitle(this.state.title || '').build()
+      })
+    }
+  }
+
   handleRefreshChange = (value: SelectableValue<number>) => {
     this.setState({ value: value.value });
     if (this.onSelect && value.value) {
@@ -112,16 +127,8 @@ class RefreshPicker extends React.Component<RefreshPickerProps> {
       clearInterval(this.timer)
     }
     if (value.value) {
-      this.timer = setInterval(() => {
-        if(this.state.query) {
-          this.state.query.runQueries()
-        }
-        if (this.state.scene) {
-          this.state.scene.setState({
-            body: getBuilder(this.state.graph || '').setTitle(this.state.title || '').build()
-          })
-        }
-      }, value.value);
+      this.timer = setInterval(this.forceRefresh, value.value);
+      this.forceRefresh()
     }
   }
 

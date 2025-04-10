@@ -14,7 +14,7 @@ export interface PanelState extends SceneObjectState {
   setGraph?: (graph: string) => void
   getLayout?: () => SceneFlexLayout
   sceneItem?: SceneFlexItem
-  query: SceneQueryRunner
+  query?: SceneQueryRunner
 }
 
 /*
@@ -36,6 +36,7 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
     model.setGraph(graph)
     if (sceneItem) {
       sceneItem.setState({
+        $data: query,
         body: getBuilder(graph).setTitle(title).build()
       })
     }
@@ -80,7 +81,7 @@ export class Controls extends SceneObjectBase<PanelState> {
   static Component = ControlsRenderer;
 
   public constructor(state?: Partial<PanelState>) {
-    super({ title: '', graph: '', query: '', refresh: 0, ...state });
+    super({ title: '', graph: '', query: undefined, refresh: 0, ...state });
   }
 
   public setGraph = (value: string) => {

@@ -35,6 +35,8 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
 
   const queryRunners = queries.map((query): { queryRunner: SceneQueryRunner; selectedBuilder: VizPanelBuilder<any, any>; title: string; graph: string; } => ({
     queryRunner: new SceneQueryRunner({
+      //runQueriesMode: 'manual',
+      //liveStreaming: true,
       datasource: {
         type: 'prometheus',
         uid: selectedDataSource,
@@ -75,8 +77,8 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
       children: queryRunners.map(({ queryRunner, selectedBuilder, title, graph }) => {
         selectedBuilder.setTitle(title)
         let sceneItem = new SceneFlexItem({
+          $timeRange: new SceneTimeRange({ from: 'now-30m', to: 'now' }),
           $data: queryRunner,
-          $timeRange: new SceneTimeRange({ from: 'now-5h', to: 'now' }),
           width: '100%',
           height: '100%',
           body: selectedBuilder.build(),
