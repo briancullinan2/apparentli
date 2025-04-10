@@ -85,7 +85,7 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
         let newLayout: SceneFlexLayout = new SceneFlexLayout({
           direction: 'column',
           children: [
-            new Controls({graph: graph, sceneItem: sceneItem}),
+            new Controls({query: queryRunner, title: title, graph: graph, sceneItem: sceneItem}),
             sceneItem
           ]
         })

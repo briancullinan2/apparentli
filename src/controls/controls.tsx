@@ -1,19 +1,20 @@
-import { SceneComponentProps, SceneFlexItem, SceneFlexLayout, SceneObjectBase, SceneObjectState } from "@grafana/scenes";
+import { SceneComponentProps, SceneFlexItem, SceneFlexLayout, SceneObjectBase, SceneObjectState, SceneQueryRunner } from "@grafana/scenes";
 import { useStyles2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import VisualizationPicker from './graph';
 import React from "react";
 import getBuilder from '../services/builder'
-//import RefreshPicker from "./refresh";
+import RefreshPicker from "./refresh";
 
 export interface PanelState extends SceneObjectState {
+  title: string;
   graph: string;
-  query: string;
   refresh: number;
   setGraph?: (graph: string) => void
   getLayout?: () => SceneFlexLayout
   sceneItem?: SceneFlexItem
+  query: SceneQueryRunner
 }
 
 /*
@@ -28,14 +29,14 @@ locationService.push({
 */
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
-  const { graph, sceneItem } = model.useState()
+  const { query, title, graph, sceneItem } = model.useState()
   const s = useStyles2(controlStyles)
 
   function onChange(graph: string) {
     model.setGraph(graph)
     if (sceneItem) {
       sceneItem.setState({
-        body: getBuilder(graph).build()
+        body: getBuilder(graph).setTitle(title).build()
       })
     }
   }
@@ -44,14 +45,11 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
     <div className={s.tools}>
       <label className={s.query}>Visualization</label>
       <VisualizationPicker init={graph} onSelect={onChange} />
-
+      <label className={s.query}>Refresh</label>
+      <RefreshPicker query={query} title={title} graph={graph} scene={sceneItem} />
     </div>
   );
 }
-/*
-      <label className={s.query}>Refresh</label>
-      <RefreshPicker onSelect={onRefreshChange} value={refresh} />
-*/
 
 
 const controlStyles = (theme: GrafanaTheme2) => ({
@@ -82,7 +80,7 @@ export class Controls extends SceneObjectBase<PanelState> {
   static Component = ControlsRenderer;
 
   public constructor(state?: Partial<PanelState>) {
-    super({ graph: '', query: '', refresh: 0, ...state });
+    super({ title: '', graph: '', query: '', refresh: 0, ...state });
   }
 
   public setGraph = (value: string) => {

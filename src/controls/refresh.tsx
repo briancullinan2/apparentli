@@ -1,28 +1,36 @@
 import React from 'react';
 //import { getDataSourceSrv } from '@grafana/runtime';
-import { useStyles2, Select } from '@grafana/ui'; // Grafana's UI components
+import { useStyles2, Select, ActionMeta } from '@grafana/ui'; // Grafana's UI components
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
+import { SceneFlexItem, SceneQueryRunner } from '@grafana/scenes';
+import getBuilder from 'services/builder';
 
 interface RefreshPickerProps {
   value?: number
   onSelect?: (text: number) => void; // Use camelCase for the prop name
+  dataSources?: Array<{ name: string, uid: number }>
+  onChange?: (value: SelectableValue<number>, actionMeta: ActionMeta) => void | {}
+  scene?: SceneFlexItem
+  graph?: string
+  title?: string
+  query?: SceneQueryRunner
 };
 
 const refreshTimes = [
   { name: 'Off', uid: 0 },
-  { name: 'Auto', uid: 15 * 1000 },
-  { name: '5s', uid: 15 * 1000 },
-  { name: '10s', uid: 15 * 1000 },
+  { name: 'Auto', uid: 15 * 1001 },
+  { name: '5s', uid: 5 * 1000 },
+  { name: '10s', uid: 10 * 1000 },
   { name: '15s', uid: 15 * 1000 },
-  { name: '30s', uid: 15 * 1000 },
-  { name: '1m', uid: 15 * 1000 },
-  { name: '5m', uid: 15 * 1000 },
-  { name: '15m', uid: 15 * 1000 },
-  { name: '30m', uid: 15 * 1000 },
-  { name: '1h', uid: 15 * 1000 },
-  { name: '2h', uid: 15 * 1000 },
-  { name: '1d', uid: 15 * 1000 },
+  { name: '30s', uid: 30 * 1000 },
+  { name: '1m', uid: 60 * 1000 },
+  { name: '5m', uid: 5 * 60 * 1000 },
+  { name: '15m', uid: 15 * 60 * 1000 },
+  { name: '30m', uid: 30 * 60 * 1000 },
+  { name: '1h', uid: 60 * 60 * 1000 },
+  { name: '2h', uid: 2 * 60 * 60 * 1000 },
+  { name: '1d', uid: 12 * 60 * 60 * 1000 },
 ];
 
 /*
@@ -40,12 +48,26 @@ const RefreshPicker: React.FC<RefreshPickerProps> = ({ init, onSelect }) => {
   );
 };
 */
+const RefreshWrapper: React.FC<RefreshPickerProps> = ({ onChange, dataSources, value }) => {
+  const s = useStyles2(getStyles);
+
+  function defaultChange() { }
+
+  return (
+    <div className={s.page}>
+      <Select
+        options={dataSources ? dataSources.map(ds => ({ label: ds.name, value: ds.uid })) : []}
+        value={value}
+        onChange={onChange || defaultChange}
+      />
+    </div>
+  )
+}
 
 
 const getStyles = (theme: GrafanaTheme2) => ({
   page: css`
     visibility: visible;
-    flex: 1 1 auto;
     display: inline-block;
     grid-area: 1 / 1 / 2 / 3;
     grid-template-columns: 0px min-content;
@@ -59,49 +81,53 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 class RefreshPicker extends React.Component<RefreshPickerProps> {
 
-  public constructor(state?: Partial<RefreshPickerProps>) {
-    super(state || {});
-
-    this.setState({dataSources: refreshTimes})
+  state: RefreshPickerProps = {
+    value: 15 * 1001
   }
 
-  state = {
-    value: 0,
-    dataSources: [] as {name: string, uid: number}[],
+  public constructor(state?: Partial<RefreshPickerProps>) {
+    super({ ...state, dataSources: refreshTimes });
+
+    // simulate async
+    setTimeout(() => {
+      this.setState({ ...state, dataSources: refreshTimes })
+
+      this.handleRefreshChange({value: this.state.value})
+    }, 1000)
   }
 
   timer?: number | any = undefined;
   onSelect?: (value: number) => void = undefined
 
-  next = () => {
-    this.timer = setTimeout(() => {
-
-      //this.setState((prevState) => ({ index: prevState.index + 1 }));
-    }, 1500);
-  }
-
   componentWillUnmount() {
     clearTimeout(this.timer);
   }
 
-  handleDataSourceChange(value: SelectableValue<number>) {
-    this.setState({value: value.value});
+  handleRefreshChange = (value: SelectableValue<number>) => {
+    this.setState({ value: value.value });
     if (this.onSelect && value.value) {
       this.onSelect(value.value)
+    }
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
+    if (value.value) {
+      this.timer = setInterval(() => {
+        if(this.state.query) {
+          this.state.query.runQueries()
+        }
+        if (this.state.scene) {
+          this.state.scene.setState({
+            body: getBuilder(this.state.graph || '').setTitle(this.state.title || '').build()
+          })
+        }
+      }, value.value);
     }
   }
 
   render() {
-    const s = useStyles2(getStyles);
-
     return (
-      <div className={s.page}>
-        <Select
-          options={this.state.dataSources.map(ds => ({ label: ds.name, value: ds.uid }))}
-          value={this.state.value}
-          onChange={this.handleDataSourceChange}
-        />
-      </div>
+      <RefreshWrapper onChange={this.handleRefreshChange} value={this.state.value} dataSources={this.state.dataSources} />
     )
   }
 }
