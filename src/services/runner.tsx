@@ -35,7 +35,7 @@ function getRunners(queryText: string, selectedDataSource?: string): QueryScene[
         uid: selectedDataSource,
       },
       // TODO: generate query from LLM
-      queries: query.targets ? query.targets.map(query => {
+      queries: query.targets ? query.targets.map((query: any) => {
         delete query.datasource
         return query
       }) : [

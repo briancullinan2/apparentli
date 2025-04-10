@@ -36,7 +36,7 @@ const VisualizationPicker: React.FC<VisualizationPickerProps> = ({init, onSelect
         {name: 'Status history', uid: 'status'},
         {name: 'Table', uid: 'table'},
         {name: 'Text', uid: 'text'},
-        {name: 'Time series', uid: 'time'},
+        {name: 'Time series', uid: 'timeseries'},
         {name: 'Trend', uid: 'trend'},
         {name: 'Traces', uid: 'traces'},
         {name: 'xychart', uid: 'xy'},
