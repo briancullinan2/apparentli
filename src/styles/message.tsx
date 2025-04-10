@@ -4,7 +4,7 @@ import { GrafanaTheme2 } from "@grafana/data"
 const messageStyles = (theme: GrafanaTheme2) => ({
   scene: css`
   flex: 50%;
-  min-height: 300px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
 `,
