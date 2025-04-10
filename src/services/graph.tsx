@@ -18,7 +18,7 @@ const uids = [
   'status',
   'table',
   //  'text',
-  'time',
+  'timeseries',
   'trend',
   'traces',
   'xy'

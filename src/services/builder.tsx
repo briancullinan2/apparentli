@@ -1,6 +1,7 @@
 import { PanelBuilders, VizPanelBuilder } from '@grafana/scenes';
 
 
+// TODO: use this in graph selector control and nowhere else
 function getBuilder (selectedGraph: string): VizPanelBuilder<any, any> {
   let selectedBuilder
   switch (selectedGraph) {
@@ -55,6 +56,7 @@ function getBuilder (selectedGraph: string): VizPanelBuilder<any, any> {
     case 'text':
       selectedBuilder = PanelBuilders.text()
       break;
+    case 'timeseries':
     case 'time':
       selectedBuilder = PanelBuilders.timeseries()
       break;

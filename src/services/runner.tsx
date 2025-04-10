@@ -9,6 +9,8 @@ export type QueryScene = {
   query: string
 }
 
+// TODO: delete this in favor of matching dashboard service "panels: []" array
+
 function getRunners(queryText: string, selectedDataSource?: string): QueryScene[] {
 
   let queries = [{ query: queryText, graph: '', title: '' }]
@@ -24,16 +26,19 @@ function getRunners(queryText: string, selectedDataSource?: string): QueryScene[
     placement: 'bottom', // or 'right'
   })*/
 
-  const queryRunners = queries.map((query) => ({
+  const queryRunners = queries.map((query: any) => ({
     queryRunner: new SceneQueryRunner({
       //runQueriesMode: 'manual',
       //liveStreaming: true,
-      datasource: {
+      datasource: query.datasource ? {...query.datasource, uid: selectedDataSource} : {
         type: 'prometheus',
         uid: selectedDataSource,
       },
       // TODO: generate query from LLM
-      queries: [
+      queries: query.targets ? query.targets.map(query => {
+        delete query.datasource
+        return query
+      }) : [
         {
           format: query.graph === 'table' || query.graph === 'logs' ? 'table' : (query.graph === 'heatmap' ? 'heatmap' : 'time_series'),
           refId: 'A',
@@ -54,8 +59,8 @@ function getRunners(queryText: string, selectedDataSource?: string): QueryScene[
     }),
     selectedBuilder: getBuilder(query.graph),
     title: query.title,
-    graph: query.graph,
-    query: query.query,
+    graph: query.type || query.graph,
+    query: query.targets ? query.targets[0].expr : query.query,
   }));
 
   return queryRunners

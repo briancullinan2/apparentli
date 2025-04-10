@@ -119,7 +119,6 @@ class RefreshPicker extends React.Component<RefreshPickerProps> {
 
   setState(newState: {} | ((prevState: Readonly<{}>, props: Readonly<RefreshPickerProps>) => {} | Pick<{}, never> | null) | Pick<{}, never> | null) {
     super.setState(newState)
-    console.log(newState)
   }
 
   forceRefresh = () => {
