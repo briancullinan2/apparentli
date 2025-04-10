@@ -33,6 +33,8 @@ This template is a starting point for building an app plugin for Grafana.
  - download javascript, or import url for panels
 
  - use templates to generate settings and queries for other source data types not just prometheus
+
+ - finish implementing function query in services, list dashboards, analyze dashboard, repurpose, etc
  
 
 

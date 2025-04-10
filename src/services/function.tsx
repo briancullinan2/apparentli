@@ -9,7 +9,7 @@ const knownFunctions = {
 
 export async function functionQuery(input: string) {
   //await openai.enabled()
-  return await promptModel(
+  let response = await promptModel(
     '\nAvailable graph types:\n' +
     uids.join('\n') +
     // TODO: replace prometheus with the right language for other connection types
@@ -20,5 +20,6 @@ export async function functionQuery(input: string) {
     '\nSpecify only the most fitting function name, no further explaination necessary.'
   )
 
+  return Object.keys(knownFunctions).filter(key => response.includes(key))[0]
 }
 
