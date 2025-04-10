@@ -19,7 +19,7 @@ function Chat() {
   const [messagesPlain, setMessagesPlain] = useState<string[]>([
     '[ {"graph": "stat", "query": "up", "title": "Target Status"}, {"graph": "time", "query": "rate(prometheus_http_requests_total[5m])", "title": "Prometheus HTTP Request Rate"}, {"graph": "time", "query": "scrape_duration_seconds", "title": "Scrape Duration"}, {"graph": "stat", "query": "sum(agent_inflight_requests)", "title": "Total Inflight Requests"}, {"graph": "time", "query": "rate(prometheus_http_requests_total[5m])", "title": "HTTP Request Rate"}, {"graph": "stat", "query": "sum(agent_metrics_active_configs)", "title": "Active Agent Configurations"}, {"graph": "time", "query": "avg(scrape_duration_seconds)", "title": "Scrape Duration"}, {"graph": "time", "query": "sum(go_cpu_classes_total_cpu_seconds_total)", "title": "Total CPU Usage"} ]'
   ])
-  const [_, setMessagesJson] = useState<any[]>([])
+  const [messagesJson, setMessagesJson] = useState<any[]>([])
   const [messagesFinal, setMessagesFinal] = useState<React.JSX.Element[]>([])
   //const [selectedGraph, setSelectedGraph] = useState<string[]>([]);
   //const [dataRefs, setDataRef] = useState<MutableRefObject<React.JSX.Element>[]>([]);
@@ -44,8 +44,8 @@ function Chat() {
       <div className={ChatStyles.page} data-testid={testIds.pageFour.container}>
         <div className={ChatStyles.container}>
           {useMemo(() => (
-            <Messages styles={MessageStyles} messages={messagesFinal} messagesPlain={messagesPlain} />
-          ), [messagesFinal, MessageStyles, messagesPlain])}
+            <Messages styles={MessageStyles} messages={messagesFinal} messagesPlain={messagesPlain} messagesJson={messagesJson} setMessagesJson={setMessagesJson} />
+          ), [messagesFinal, MessageStyles, messagesPlain, messagesJson])}
         </div>
         <div className={ChatStyles.footer}>
           <div className={ChatStyles.inputs}>

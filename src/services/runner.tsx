@@ -1,8 +1,15 @@
 import { SceneQueryRunner, VizPanelBuilder } from "@grafana/scenes";
 import getBuilder from "./builder";
 
+export type QueryScene = {
+  queryRunner: SceneQueryRunner
+  selectedBuilder: VizPanelBuilder<any, any>
+  title: string
+  graph: string
+  query: string
+}
 
-function getRunners(queryText: string, selectedDataSource?: string): Array<{ queryRunner: SceneQueryRunner, selectedBuilder: VizPanelBuilder<any, any>, title: string, graph: string, query: string }> {
+function getRunners(queryText: string, selectedDataSource?: string): QueryScene[] {
 
   let queries = [{ query: queryText, graph: '', title: '' }]
   try {

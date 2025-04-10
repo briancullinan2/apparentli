@@ -9,6 +9,7 @@ import RefreshPicker from "./refresh";
 import getRunners from "services/runner";
 
 export interface PanelState extends SceneObjectState {
+  editing: boolean;
   from: string;
   to: string;
   title: string;
@@ -20,6 +21,7 @@ export interface PanelState extends SceneObjectState {
   queryRunner?: SceneQueryRunner
   query?: string
   data?: string
+  onEdit?: (json: any) => void
 }
 
 type refreshState = (state: any) => void | undefined
@@ -36,7 +38,7 @@ locationService.push({
 */
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
-  const { to, from, query, data, title, graph, sceneItem } = model.useState()
+  const { editing, to, from, query, data, title, graph, sceneItem, onEdit } = model.useState()
   const ControlStyles = useStyles2(controlStyles)
 
   function onChange(graph: string) {
@@ -48,6 +50,9 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
         $timeRange: new SceneTimeRange({ from: from, to: to }),
         body: getBuilder(graph).setTitle(title).build()
       })
+    }
+    if(onEdit) {
+      onEdit({ query, graph, title })
     }
   }
 
@@ -95,6 +100,9 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
       clearTimeout(timer)
     }
     timer = setTimeout(updateScene, 1000)
+    if(onEdit) {
+      onEdit({ query: event.target.value, graph, title })
+    }
   }
 
   function onState(setState: (state: any) => void) {
@@ -102,7 +110,7 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
   }
 
   return (
-    <div className={ControlStyles.tools}>
+    <div hidden={!editing} className={ControlStyles.tools}>
       <div className={ControlStyles.queryInput}>
         <label className={ControlStyles.query}>Visualization</label>
         <VisualizationPicker init={graph} onSelect={onChange} />
@@ -192,7 +200,7 @@ export class Controls extends SceneObjectBase<PanelState> {
   static Component = ControlsRenderer;
 
   public constructor(state?: Partial<PanelState>) {
-    super({ query: '', data: '', to: 'now', from: 'now - 30m', title: '', graph: '', queryRunner: undefined, refresh: 0, ...state });
+    super({ editing: false, query: '', data: '', to: 'now', from: 'now - 30m', title: '', graph: '', queryRunner: undefined, refresh: 0, onEdit: undefined, ...state });
   }
 
   public setGraph = (value: string) => {

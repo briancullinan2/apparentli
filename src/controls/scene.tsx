@@ -5,25 +5,23 @@ import {
   SceneTimeRange,
 } from '@grafana/scenes';
 import { Controls } from './controls';
-import getRunners from 'services/runner';
 
-function AdvancedScene(queryText: string, selectedDataSource: string /*, selectedGraph: string */) {
-  let queryRunners = getRunners(queryText, selectedDataSource)
-
+function AdvancedScene(queryRunners: any[], selectedDataSource: string, editing: boolean, setMessagesJson: (i: number, json: any) => void) {
   let sqrt = Math.sqrt(queryRunners.length)
   let rows = 1
   let cols = 3
-  if(sqrt >= 2) {
+  if (sqrt >= 2) {
     rows = Math.ceil(sqrt)
     cols = Math.ceil(sqrt)
   }
 
+  // TODO: modify this concept based on queries or settings
   let rowLayouts = []
   let queryCount = 0
-  for(let i = 0; i < rows; i++) {
+  for (let i = 0; i < rows; i++) {
     let columns = []
-    for(let j = 0; j < cols; j++) {
-      if(!queryRunners[queryCount]) {
+    for (let j = 0; j < cols; j++) {
+      if (!queryRunners[queryCount]) {
         break
       }
 
@@ -41,10 +39,12 @@ function AdvancedScene(queryText: string, selectedDataSource: string /*, selecte
       let newLayout: SceneFlexLayout = new SceneFlexLayout({
         direction: 'column',
         children: [
-          new Controls({data: selectedDataSource, graph: graph, query: query, title: title, sceneItem: sceneItem}),
+          new Controls({ editing: editing, data: selectedDataSource, graph: graph, query: query, title: title, sceneItem: sceneItem, 
+            onEdit: setMessagesJson.bind(null, queryCount) }),
           sceneItem
         ]
       })
+
       columns.push(newLayout)
       queryCount++
     }
