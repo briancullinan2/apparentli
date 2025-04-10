@@ -37,10 +37,10 @@ locationService.push({
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
   const { to, from, query, data, title, graph, sceneItem } = model.useState()
-  const s = useStyles2(controlStyles)
+  const ControlStyles = useStyles2(controlStyles)
 
   function onChange(graph: string) {
-    let queryRunner = getRunners(JSON.stringify([{query, graph, title}]), data)[0].queryRunner
+    let queryRunner = getRunners(JSON.stringify([{ query, graph, title }]), data)[0].queryRunner
     model.setGraph(graph)
     if (sceneItem) {
       sceneItem.setState({
@@ -61,13 +61,13 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
       })
     }
     if (sceneItem) {
-      let queryRunner = getRunners(JSON.stringify([{query, graph, title}]), data)[0].queryRunner
+      let queryRunner = getRunners(JSON.stringify([{ query, graph, title }]), data)[0].queryRunner
       sceneItem.setState({
         $data: queryRunner,
         $timeRange: new SceneTimeRange({ from: from, to: to }),
         body: getBuilder(graph).setTitle(title).build()
       })
-      if(queryRunner) {
+      if (queryRunner) {
         queryRunner.runQueries()
       }
     }
@@ -75,7 +75,7 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
 
   function setFrom(event: ChangeEvent<HTMLInputElement>) {
     model.setState({ from: event.target.value })
-    if(timer) {
+    if (timer) {
       clearTimeout(timer)
     }
     timer = setTimeout(updateScene, 1000)
@@ -83,7 +83,15 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
 
   function setTo(event: ChangeEvent<HTMLInputElement>) {
     model.setState({ to: event.target.value })
-    if(timer) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(updateScene, 1000)
+  }
+
+  function setQuery(event: ChangeEvent<HTMLInputElement>) {
+    model.setState({ query: event.target.value })
+    if (timer) {
       clearTimeout(timer)
     }
     timer = setTimeout(updateScene, 1000)
@@ -94,22 +102,26 @@ function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
   }
 
   return (
-    <div className={s.tools}>
-      <div>
-        <label className={s.query}>Visualization</label>
+    <div className={ControlStyles.tools}>
+      <div className={ControlStyles.queryInput}>
+        <label className={ControlStyles.query}>Visualization</label>
         <VisualizationPicker init={graph} onSelect={onChange} />
       </div>
-      <div>
-        <label className={s.query}>Refresh</label>
+      <div className={ControlStyles.queryInput}>
+        <label className={ControlStyles.query}>Refresh</label>
         <RefreshPicker onStatable={onState} data={data} query={query} from={from} to={to} title={title} graph={graph} scene={sceneItem} />
       </div>
-      <div>
-        <label className={s.query}>From</label>
-        <input className={s.input} value={from} onChange={setFrom} />
+      <div className={ControlStyles.queryInput}>
+        <label className={ControlStyles.query}>From</label>
+        <input className={ControlStyles.input} value={from} onChange={setFrom} />
       </div>
-      <div>
-        <label className={s.query}>To</label>
-        <input className={s.input} value={to} onChange={setTo} />
+      <div className={ControlStyles.queryInput}>
+        <label className={ControlStyles.query}>To</label>
+        <input className={ControlStyles.input} value={to} onChange={setTo} />
+      </div>
+      <div className={ControlStyles.queryInput}>
+        <label className={ControlStyles.query}>Query</label>
+        <input className={ControlStyles.input} value={query} onChange={setQuery} />
       </div>
     </div>
   );
@@ -143,6 +155,7 @@ const controlStyles = (theme: GrafanaTheme2) => ({
     width: auto;
     max-width: 100%;
     display: inline-block;
+    flex: 100%;
     flex-flow: wrap;
     -webkit-box-align: center;
     align-items: center;
@@ -167,6 +180,11 @@ const controlStyles = (theme: GrafanaTheme2) => ({
     height: auto;
     max-width: 100%;
     cursor: pointer;
+  `,
+  queryInput: css`
+    flex-grow: 1;
+    white-space: nowrap;
+    display:flex;
   `
 })
 

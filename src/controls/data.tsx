@@ -53,6 +53,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     box-sizing: border-box;
     padding: 0px;
     z-index: 1;
+    flex: 100%;
   `
 })
 
