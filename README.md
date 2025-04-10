@@ -19,17 +19,20 @@ This template is a starting point for building an app plugin for Grafana.
 
  - added `- ./grafana.db:/var/lib/grafana/grafana.db` to VOLUMES in docker config
  
+ - made expr available with an editable query box
+ 
+ - made time range available to each graph output
+
+
 ## TODO
 
  - fix template variables for colors
 
  - make advanced scene builder more advanced by automatically arranging graphs based on description, i.e. grid, all on one row, two rows, list of graphs, etc
 
- - make expr available with an editable query box
-
- - make more settings available to ui and LLM
-
  - download javascript, or import url for panels
+
+ - use templates to generate settings and queries for other source data types not just prometheus
  
 
 

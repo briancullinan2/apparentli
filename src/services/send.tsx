@@ -1,6 +1,7 @@
 import React, { SetStateAction, JSX } from "react";
 import { getMetrics, getRelevant } from '../services/metrics'
 import { graphQuery } from "./graph";
+import { fetchDashboardJson, fetchDashboards } from "./dashboard";
 
 
 async function sendMessage(input: string,
@@ -24,6 +25,11 @@ async function sendMessage(input: string,
   setInput('');
 
   let metricNames = await getMetrics()
+
+  let dashboards = await fetchDashboards()
+  console.log(dashboards)
+  let dashboardSpec = await fetchDashboardJson(dashboards[0]?.uid)
+  console.log(dashboardSpec)
 
   let relevantMetrics = await getRelevant(input, metricNames)
 
