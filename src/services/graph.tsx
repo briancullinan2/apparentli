@@ -1,6 +1,6 @@
 import { promptModel } from "./openai";
 
-const uids = [
+export const uids = [
   'bar',
   'barguage',
   'grid',
