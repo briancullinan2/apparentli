@@ -1,21 +1,28 @@
-import { SceneComponentProps, SceneFlexItem, SceneFlexLayout, SceneObjectBase, SceneObjectState, SceneQueryRunner } from "@grafana/scenes";
+import { SceneComponentProps, SceneFlexItem, SceneFlexLayout, SceneObjectBase, SceneObjectState, SceneQueryRunner, SceneTimeRange } from "@grafana/scenes";
 import { useStyles2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 import VisualizationPicker from './graph';
-import React from "react";
+import React, { ChangeEvent } from "react";
 import getBuilder from '../services/builder'
 import RefreshPicker from "./refresh";
+import getRunners from "services/runner";
 
 export interface PanelState extends SceneObjectState {
+  from: string;
+  to: string;
   title: string;
   graph: string;
   refresh: number;
   setGraph?: (graph: string) => void
   getLayout?: () => SceneFlexLayout
   sceneItem?: SceneFlexItem
-  query?: SceneQueryRunner
+  queryRunner?: SceneQueryRunner
+  query?: string
+  data?: string
 }
+
+type refreshState = (state: any) => void | undefined
 
 /*
 import { locationService } from '@grafana/runtime';
@@ -29,25 +36,81 @@ locationService.push({
 */
 
 function ControlsRenderer({ model }: SceneComponentProps<Controls>) {
-  const { query, title, graph, sceneItem } = model.useState()
+  const { to, from, query, data, title, graph, sceneItem } = model.useState()
   const s = useStyles2(controlStyles)
 
   function onChange(graph: string) {
+    let queryRunner = getRunners(JSON.stringify([{query, graph, title}]), data)[0].queryRunner
     model.setGraph(graph)
     if (sceneItem) {
       sceneItem.setState({
-        $data: query,
+        $data: queryRunner,
+        $timeRange: new SceneTimeRange({ from: from, to: to }),
         body: getBuilder(graph).setTitle(title).build()
       })
     }
   }
 
+  let timer: any
+  let refresh: refreshState
+  function updateScene() {
+    if (refresh) {
+      refresh({
+        from: from,
+        to: to,
+      })
+    }
+    if (sceneItem) {
+      let queryRunner = getRunners(JSON.stringify([{query, graph, title}]), data)[0].queryRunner
+      sceneItem.setState({
+        $data: queryRunner,
+        $timeRange: new SceneTimeRange({ from: from, to: to }),
+        body: getBuilder(graph).setTitle(title).build()
+      })
+      if(queryRunner) {
+        queryRunner.runQueries()
+      }
+    }
+  }
+
+  function setFrom(event: ChangeEvent<HTMLInputElement>) {
+    model.setState({ from: event.target.value })
+    if(timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(updateScene, 1000)
+  }
+
+  function setTo(event: ChangeEvent<HTMLInputElement>) {
+    model.setState({ to: event.target.value })
+    if(timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(updateScene, 1000)
+  }
+
+  function onState(setState: (state: any) => void) {
+    refresh = setState
+  }
+
   return (
     <div className={s.tools}>
-      <label className={s.query}>Visualization</label>
-      <VisualizationPicker init={graph} onSelect={onChange} />
-      <label className={s.query}>Refresh</label>
-      <RefreshPicker query={query} title={title} graph={graph} scene={sceneItem} />
+      <div>
+        <label className={s.query}>Visualization</label>
+        <VisualizationPicker init={graph} onSelect={onChange} />
+      </div>
+      <div>
+        <label className={s.query}>Refresh</label>
+        <RefreshPicker onStatable={onState} data={data} query={query} from={from} to={to} title={title} graph={graph} scene={sceneItem} />
+      </div>
+      <div>
+        <label className={s.query}>From</label>
+        <input className={s.input} value={from} onChange={setFrom} />
+      </div>
+      <div>
+        <label className={s.query}>To</label>
+        <input className={s.input} value={to} onChange={setTo} />
+      </div>
     </div>
   );
 }
@@ -74,6 +137,36 @@ const controlStyles = (theme: GrafanaTheme2) => ({
     right: -1px;
     white-space: nowrap;
     gap: 4px;
+  `,
+  input: css`
+    padding: 0px 0px 0px 8px;
+    width: auto;
+    max-width: 100%;
+    display: inline-block;
+    flex-flow: wrap;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 2px;
+    background: rgb(17, 18, 23);
+    line-height: 1.57143;
+    font-size: 14px;
+    color: rgb(204, 204, 220);
+    border: 1px solid rgba(204, 204, 220, 0.2);
+    position: relative;
+    box-sizing: border-box;
+    flex-flow: wrap;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    min-height: 32px;
+    height: auto;
+    max-width: 100%;
+    cursor: pointer;
   `
 })
 
@@ -81,7 +174,7 @@ export class Controls extends SceneObjectBase<PanelState> {
   static Component = ControlsRenderer;
 
   public constructor(state?: Partial<PanelState>) {
-    super({ title: '', graph: '', query: undefined, refresh: 0, ...state });
+    super({ query: '', data: '', to: 'now', from: 'now - 30m', title: '', graph: '', queryRunner: undefined, refresh: 0, ...state });
   }
 
   public setGraph = (value: string) => {

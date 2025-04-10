@@ -1,9 +1,13 @@
+// inspired by https://github.com/grafana/grafana/issues/73434
+
 import React from 'react';
 //import { getDataSourceSrv } from '@grafana/runtime';
 import { useStyles2, Select, ActionMeta } from '@grafana/ui'; // Grafana's UI components
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 import { SceneFlexItem, SceneQueryRunner, SceneTimeRange } from '@grafana/scenes';
+import getBuilder from 'services/builder';
+import getRunners from 'services/runner';
 
 interface RefreshPickerProps {
   value?: number
@@ -13,7 +17,11 @@ interface RefreshPickerProps {
   scene?: SceneFlexItem
   graph?: string
   title?: string
-  query?: SceneQueryRunner
+  from?: string
+  to?: string
+  query?: string
+  data?: string
+  onStatable?: (setState: (state: any) => void) => void
 };
 
 const refreshTimes = [
@@ -80,41 +88,51 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 class RefreshPicker extends React.Component<RefreshPickerProps> {
 
-  state: RefreshPickerProps = {
-    value: 15 * 1001
+  state = {
+    value: 15 * 1001,
+    dataSources: []
   }
 
   public constructor(state?: Partial<RefreshPickerProps>) {
-    super({ ...state, dataSources: refreshTimes });
+    super({ value: 15 * 1001, onStatable: undefined, from: 'now - 30m', to: 'now', dataSources: refreshTimes, ...state });
 
     // simulate async
     setTimeout(() => {
       this.setState({ ...state, dataSources: refreshTimes })
 
       this.handleRefreshChange({value: this.state.value})
-    }, 1000)
+
+      if(this.props.onStatable) {
+        this.props.onStatable(this.setState)
+      }
+    }, 2000)
   }
 
   timer?: number | any = undefined;
   onSelect?: (value: number) => void = undefined
+  queryRunner?: SceneQueryRunner
 
   componentWillUnmount() {
     clearTimeout(this.timer);
   }
 
+  setState(newState: {} | ((prevState: Readonly<{}>, props: Readonly<RefreshPickerProps>) => {} | Pick<{}, never> | null) | Pick<{}, never> | null) {
+    super.setState(newState)
+    console.log(newState)
+  }
+
   forceRefresh = () => {
-    if(this.state.query) {
-      this.state.query.runQueries()
-    }
-    //if (this.state.scene) {
-    //  this.state.scene.forceRender()
-    //}
-    if (this.state.scene) {
-      this.state.scene.setState({
-        $data: this.state.query,
-        $timeRange: new SceneTimeRange({ from: 'now-30m', to: 'now' }),
-        //body: getBuilder(this.state.graph || '').setTitle(this.state.title || '').build()
+    let thisState = {query: this.props.query, graph: this.props.graph, title: this.props.title}
+    this.queryRunner = getRunners(JSON.stringify([thisState]), this.props.data)[0].queryRunner
+    if (this.props.scene) {
+      this.props.scene.setState({
+        $data: this.queryRunner,
+        $timeRange: new SceneTimeRange({ from: this.props.from, to: this.props.to }),
+        body: getBuilder(this.props.graph || '').setTitle(this.props.title || '').build()
       })
+    }
+    if (this.queryRunner) {
+      this.queryRunner.runQueries()
     }
   }
 
