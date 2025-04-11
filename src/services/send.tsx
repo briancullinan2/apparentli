@@ -27,26 +27,29 @@ async function sendMessage(input: string,
   setMessagesPlain(prev => [...prev, message.text]);
   setInput('');
 
-  let relevantFunction = await functionQuery(input)
+  let relevantFunctions = await functionQuery(input)
 
-  let responseObject: string
-  switch (relevantFunction) {
-    case 'queryResults':
-      
-      break;
-    case 'generalChitChat':
-      responseObject = await promptModel(input)
-      break;
-    case 'displayDashboard':
-      let dashboards = await fetchDashboards()
-      let dataSources = await getDataSourceSrv().getList()
-      responseObject = await dashboardQuery(input, dashboards, dataSources)
-      break;
-    case 'generateGraph':
-    default:
-      let metricNames = await getMetrics()
-      let relevantMetrics = await getRelevant(input, metricNames)
-      responseObject = await graphQuery(input, relevantMetrics)
+  let responseObject: string = ''
+  for (let i = 0; i < relevantFunctions.length; i++) {
+    switch (relevantFunctions[i]) {
+      case 'queryResults':
+
+        break;
+      case 'generalChitChat':
+        responseObject += await promptModel(input)
+        break;
+      case 'displayDashboard':
+        let dashboards = await fetchDashboards()
+        let dataSources = await getDataSourceSrv().getList()
+        responseObject += await dashboardQuery(input, dashboards, dataSources)
+        break;
+      case 'generateGraph':
+      default:
+        let metricNames = await getMetrics()
+        let relevantMetrics = await getRelevant(input, metricNames)
+        responseObject += await graphQuery(input, relevantMetrics)
+    }
+    break;
   }
   setMessages(prev => [...prev, (<div className={MessageStyles.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseObject }}></div>)])
   setMessagesPlain(prev => [...prev, responseObject]);

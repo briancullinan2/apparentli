@@ -70,8 +70,9 @@ export async function dashboardQuery(input: string, dashboards: Dashboard[], dat
     uids.join('\n') +
     '\nAvailable data sources:\n' +
     matchedDataSources.map(ds => JSON.stringify(ds)).join('\n') +
-    '\nAttempt to fullfil the requested information as best as possible in JSON or graph format like {"graph": "...", "query": "...", "title": "..."} for the following prompt:\n' +
-    input.trim()
+    '\nAttempt to fullfil the requested information for the following prompt:\n' +
+    input.trim() + 
+    '\nResponse with JSON or a list of graphs formated like [{"graph": "...", "query": "...", "title": "..."}, ...], no explaination necessary.'
   )
 }
 

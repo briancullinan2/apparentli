@@ -8,7 +8,7 @@ const knownFunctions: { [key: string]: string; } = {
   'displayDashboard': 'display and existing dashboard or information from it'
 }
 
-export async function functionQuery(input: string) {
+export async function functionQuery(input: string): Promise<string[]> {
   //await openai.enabled()
   let response = await promptModel(
     '\nAvailable graph types:\n' +
@@ -16,11 +16,11 @@ export async function functionQuery(input: string) {
     // TODO: replace prometheus with the right language for other connection types
     '\nList of known basic functions:\n' +
     Object.keys(knownFunctions).map(functionName => functionName + ' - ' + knownFunctions[functionName]).join('\n') +
-    '\nCreate a short list of PromQL queries that is most fitting for the following prompt:\n' +
+    '\nDetermine the most relevant function to the following prompt:\n' +
     input.trim() +
     '\nSpecify only the most fitting function name, no further explaination necessary.'
   )
 
-  return Object.keys(knownFunctions).filter(key => response.includes(key))[0]
+  return Object.keys(knownFunctions).filter(key => response.includes(key))
 }
 

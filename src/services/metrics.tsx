@@ -25,7 +25,8 @@ export async function getRelevant(input: string, metricNames?: string[]) {
       'Are any of the following metrics related to the prompt:\n' +
       metricNames.slice(i * BATCH_COUNT, i * BATCH_COUNT + BATCH_COUNT).join('\n') +
       '\nList only a few related metrics, no explaination needed:\n' +
-      input.trim()
+      input.trim() + 
+      '\nOnly list a few metrics, we\'ll generate a dashboard in another step.'
     )
 
     relevantMetrics.push(...metricNames.filter((name: string) => matchedMetrics.includes(name)))

@@ -57,7 +57,7 @@ export async function graphQuery(input: string, relevantMetrics: string[]) {
     'sort(topk(8, sum by (handler) (grafana_http_request_duration_seconds_count)))\n' +
     '\nCreate a short list of PromQL queries that is most fitting for the following prompt:\n' +
     input.trim() +
-    '\nSpecify the most fitting graph type for each query and respond in JSON format like {"graph": "...", "query": "...", "title": "..."}, JSON only, no further explaination necessary.'
+    '\nSpecify the most fitting graph type for each query and respond in JSON format like [{"graph": "...", "query": "...", "title": "..."}, ...], JSON only, no further explaination necessary.'
   )
 
 }

@@ -19,6 +19,7 @@ function getRunners(queryText: string, selectedDataSource?: string): QueryScene[
   } catch (e) { }
 
   //let selectedBuilder = getBuilder(selectedGraph)
+  // compensate for LLM sending only one graph
   if(typeof (queries as any).graph !== 'undefined') {
     queries = [{ query: '', graph: '', title: '', ...queries }]
   }
