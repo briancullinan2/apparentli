@@ -1,10 +1,29 @@
 import React, { SetStateAction, JSX } from "react";
 import { getMetrics, getRelevant } from '../services/metrics'
-import { graphQuery } from "./graph";
-import { functionQuery } from "./function";
+import { graphQuery, uids } from "./graph";
+import { FUNCTIONAL_PROMPT, functionQuery } from "./function";
 import { dashboardQuery, fetchDashboards } from "./dashboard";
 import { getDataSourceSrv } from "@grafana/runtime";
 import { promptModel } from "./openai";
+const {Remarkable} = require('remarkable');
+const md = new Remarkable({html: true, xhtmlOut: true, breaks: true});
+
+async function generalQuery(input: string) {
+  let dashboards = await fetchDashboards()
+  let dataSources = await getDataSourceSrv().getList()
+  let contextPreface = 'Available graphs:\n' +
+    uids.join('\n') +
+    '\nAvailable functions:\n' +
+    FUNCTIONAL_PROMPT +
+    '\nAvailable data sources:\n' +
+    dataSources.map(({ name, uid, type }) => JSON.stringify({ name, uid, type })).join('\n') +
+    '\nAvailable dashboards:\n' +
+    dashboards.map(({ title, uid, type }) => JSON.stringify({ title, uid, type })).join('\n') +
+    '\nRespond to the following prompt:\n' + input
+  let result = await promptModel(contextPreface)
+  let html = md.render(result)
+  return html
+}
 
 
 async function sendMessage(input: string,
@@ -29,14 +48,14 @@ async function sendMessage(input: string,
 
   let relevantFunctions = await functionQuery(input)
 
-  let responseObject: string = ''
+  let responseObject = ''
   for (let i = 0; i < relevantFunctions.length; i++) {
     switch (relevantFunctions[i]) {
       case 'queryResults':
 
         break;
       case 'generalChitChat':
-        responseObject += await promptModel(input)
+        responseObject += await generalQuery(input)
         break;
       case 'displayDashboard':
         let dashboards = await fetchDashboards()

@@ -1,13 +1,18 @@
 import { openai } from '@grafana/llm';
 
-export async function promptModel(input: string, retry: number = 0): Promise<string> {
-  await openai.health()
+let first = false
+export async function promptModel(input: string, retry = 0): Promise<string> {
+  if(!first) {
+    first = true
+    let health = await openai.health()
+    console.log(health)
+  }
 
   const result = await openai
     .chatCompletions({
       // model: openai.Model.LARGE, // defaults to BASE, use larger model for longer context and complex tasks
       messages: [
-        { role: 'system', content: 'You are a helpful assistant with deep knowledge of the Grafana, Prometheus and general observability ecosystem.' },
+        { role: 'system', content: 'You are a helpful assistant with deep knowledge of the Grafana, Prometheus and general observability ecosystem. Respond in markdown or JSON or as requested.' },
         {
           role: 'user', content: input.trim()
         },
