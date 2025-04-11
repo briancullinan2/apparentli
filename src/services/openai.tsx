@@ -1,6 +1,6 @@
 import { openai } from '@grafana/llm';
 
-export async function promptModel(input: string) {
+export async function promptModel(input: string): Promise<string> {
   //await openai.enabled()
   const stream = openai
     .chatCompletions({
@@ -18,6 +18,6 @@ export async function promptModel(input: string) {
 
   // TODO: return unwrapped json?
 
-  return responseObject
+  return responseObject as string
 
 }

@@ -1,4 +1,4 @@
-import performQuery from "./query";
+import { performQuery } from "./query";
 import { getDataSourceSrv } from '@grafana/runtime';
 import { promptModel } from "./openai";
 

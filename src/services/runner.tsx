@@ -19,13 +19,14 @@ function getRunners(queryText: string, selectedDataSource?: string): QueryScene[
   } catch (e) { }
 
   //let selectedBuilder = getBuilder(selectedGraph)
-
+  if(typeof (queries as any).graph !== 'undefined') {
+    queries = [{ query: '', graph: '', title: '', ...queries }]
+  }
 
   /*selectedBuilder.setOption('legend', {
     displayMode: 'list', // or 'table', 'hidden'
     placement: 'bottom', // or 'right'
   })*/
-
   const queryRunners = queries.map((query: any) => ({
     queryRunner: new SceneQueryRunner({
       //runQueriesMode: 'manual',

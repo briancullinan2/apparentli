@@ -24,6 +24,9 @@ function generateMessage(
     newMessages.push(message)
   } else if (message.props.className === MessageStyles.theirs) {
     newMessages.push(message)
+    if(!plainText.includes('graph') && !plainText.includes('type')) {
+      return newMessages
+    }
     let queries = getRunners(messageJson ? JSON.stringify(messageJson) : plainText, selectedDataSource)
     let scene = AdvancedScene(queries, selectedDataSource, editing, (i: number, query: any) => {
       queries[i] = query

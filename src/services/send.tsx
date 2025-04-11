@@ -1,6 +1,10 @@
 import React, { SetStateAction, JSX } from "react";
 import { getMetrics, getRelevant } from '../services/metrics'
 import { graphQuery } from "./graph";
+import { functionQuery } from "./function";
+import { dashboardQuery, fetchDashboards } from "./dashboard";
+import { getDataSourceSrv } from "@grafana/runtime";
+import { promptModel } from "./openai";
 
 
 async function sendMessage(input: string,
@@ -23,37 +27,29 @@ async function sendMessage(input: string,
   setMessagesPlain(prev => [...prev, message.text]);
   setInput('');
 
-  let metricNames = await getMetrics()
+  let relevantFunction = await functionQuery(input)
 
-  let relevantMetrics = await getRelevant(input, metricNames)
-
-  let responseObject = await graphQuery(input, relevantMetrics)
-
+  let responseObject: string
+  switch (relevantFunction) {
+    case 'queryResults':
+      
+      break;
+    case 'generalChitChat':
+      responseObject = await promptModel(input)
+      break;
+    case 'displayDashboard':
+      let dashboards = await fetchDashboards()
+      let dataSources = await getDataSourceSrv().getList()
+      responseObject = await dashboardQuery(input, dashboards, dataSources)
+      break;
+    case 'generateGraph':
+    default:
+      let metricNames = await getMetrics()
+      let relevantMetrics = await getRelevant(input, metricNames)
+      responseObject = await graphQuery(input, relevantMetrics)
+  }
   setMessages(prev => [...prev, (<div className={MessageStyles.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseObject }}></div>)])
   setMessagesPlain(prev => [...prev, responseObject]);
-  /*
-try {
-  const res = await fetch('/api/plugins/briancullinan-mycomputer-app/resources/echo', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-
-  if (!res.ok) {
-    console.error('Failed to send message:', await res.text());
-    return
-  }
-
-  let responseHTML = await res.text()
-  setMessages(prev => [...prev, (<div className={s.theirs} key={prev.length} dangerouslySetInnerHTML={{ __html: responseHTML }}></div>)])
-} catch (err) {
-  console.error('Fetch error:', err);
-}
-  */
-
-
 }
 
 export default sendMessage

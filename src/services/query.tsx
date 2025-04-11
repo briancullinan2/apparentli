@@ -1,7 +1,12 @@
 import { getBackendSrv, getDataSourceSrv, getAppEvents } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
-async function performQuery(text: string, selectedDataSource: string, format?: string) {
+
+export async function performQuery(text: string, selectedDataSource: string, format?: string) {
+  return performTarget({expr: text}, selectedDataSource, format)
+}
+
+export async function performTarget(target: any, selectedDataSource: string, format?: string) {
   const ds = await getDataSourceSrv().get(selectedDataSource);
   const appEvents = getAppEvents();
   try {
@@ -14,13 +19,13 @@ async function performQuery(text: string, selectedDataSource: string, format?: s
         queries: [
           {
             datasourceId: ds.id,
-            refId: 'A',
             format: format ? format : 'time_series',
             datasource: {
-              type: 'prometheus',
+              type: ds.type,
               uid: selectedDataSource,
             },
-            expr: text,
+            ... target,
+            refId: 'A',
           }
         ],
       },
@@ -32,7 +37,7 @@ async function performQuery(text: string, selectedDataSource: string, format?: s
 
     appEvents.publish({
       type: 'success',
-      payload: [text + ': ' + resp.status + ' (' + resp.statusText + ')'],
+      payload: [target.expr + ': ' + resp.status + ' (' + resp.statusText + ')'],
     });
 
     return (resp.data as any).results.A.frames
@@ -40,9 +45,8 @@ async function performQuery(text: string, selectedDataSource: string, format?: s
   } catch (error: any) {
     appEvents.publish({
       type: 'error',
-      payload: [text + ': ' + error.status + ' (' + error.statusText + ') ' + error.data.message],
+      payload: [target.expr + ': ' + error.status + ' (' + error.statusText + ') ' + error.data.message],
     });
   }
 }
 
-export default performQuery
