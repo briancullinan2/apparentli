@@ -19,6 +19,7 @@ async function generalQuery(input: string) {
     dataSources.map(({ name, uid, type }) => JSON.stringify({ name, uid, type })).join('\n') +
     '\nAvailable dashboards:\n' +
     dashboards.map(({ title, uid, type }) => JSON.stringify({ title, uid, type })).join('\n') +
+    // TODO: include recent message history
     '\nRespond to the following prompt:\n' + input
   let result = await promptModel(contextPreface)
   let html = md.render(result)

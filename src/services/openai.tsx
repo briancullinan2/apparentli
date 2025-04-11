@@ -18,7 +18,7 @@ export async function promptModel(input: string, retry = 0): Promise<string> {
         },
       ],
     })
-    
+
   // Subscribe to the stream and update the state for each returned value.
   let responseObject = result.object;
 

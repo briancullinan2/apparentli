@@ -17,16 +17,19 @@ function generateMessage(
   setEditing: (edit: boolean) => void,
   messageJson: any,
   setMessagesJson: ((obj: any) => void) | undefined,
+  nextMessage?: React.JSX.Element,
+
 ): React.JSX.Element[] {
   const newMessages: React.JSX.Element[] = []
 
-  if (message.props.className === MessageStyles.mine) {
+  // insert graphs where they are expected
+  if (
+    // message.props.className === MessageStyles.theirs
+    (plainText.includes('"graph":') || plainText.includes('"type":'))
+    // trying not to affect the list
+    && (!nextMessage || nextMessage.props.className !== MessageStyles.scene)
+  ) {
     newMessages.push(message)
-  } else if (message.props.className === MessageStyles.theirs) {
-    newMessages.push(message)
-    if(!plainText.includes('"graph":') && !plainText.includes('"type":')) {
-      return newMessages
-    }
     let queries = getRunners(messageJson ? JSON.stringify(messageJson) : plainText, selectedDataSource)
     let scene = AdvancedScene(queries, selectedDataSource, editing, (i: number, query: any) => {
       queries[i] = query
@@ -51,8 +54,8 @@ function generateMessage(
         </UrlSyncContextProvider>
       </div>
     ))
-  } else if (message.props.className === MessageStyles.scene) {
-
+  } else {
+    newMessages.push(message)
   }
 
   return newMessages
@@ -83,7 +86,8 @@ function MessagesClass({ messages, messagesPlain, messagesJson, setMessagesJson,
       messagesJson[i], setMessagesJson ? ((i: number, value: any) => setMessagesJson((prev: any[]) => {
         prev[i] = value
         return Array.from(prev)
-      })).bind(null, i) : undefined
+      })).bind(null, i) : undefined,
+      messages[i+1]
     )
     newMessages.push(...result)
   }

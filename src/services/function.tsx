@@ -2,10 +2,10 @@ import { uids } from "./graph";
 import { promptModel } from "./openai";
 
 const knownFunctions: { [key: string]: string; } = {
-  'queryResults': 'query data available from data sources directly',
-  'generateGraph': 'generate a single graph or an entire dashboard from various metrics',
-  'generalChitChat': 'general inquiry into this grafana system',
-  'displayDashboard': 'display and existing dashboard or information from it'
+  'queryResults': 'query data available from data sources directly, for JSON data requests only',
+  'generateGraph': 'generate a single graph or an entire dashboard, show or display information and various metrics',
+  'generalChitChat': 'general inquiry into this grafana system, and recent message history',
+  'displayDashboard': 'display and existing dashboard or panels or information from it'
 }
 
 export const FUNCTIONAL_PROMPT = Object.keys(knownFunctions).map(functionName => functionName + ' - ' + knownFunctions[functionName]).join('\n')
