@@ -17,7 +17,7 @@ import LiveReloadPlugin from 'webpack-livereload-plugin';
 import VirtualModulesPlugin from 'webpack-virtual-modules';
 
 import { BuildModeWebpackPlugin } from './BuildModeWebpackPlugin';
-import { DIST_DIR, SOURCE_DIR } from './constants.ts';
+import { DIST_DIR, SOURCE_DIR } from './constants';
 import { getCPConfigVersion, getEntries, getPackageJson, getPluginJson, hasReadme, isWSL } from './utils';
 
 const pluginJson = getPluginJson();
@@ -34,7 +34,11 @@ __webpack_public_path__ =
 `,
 });
 
-const config = async (env): Promise<Configuration> => {
+export type Env = {
+  [key: string]: true | string | Env;
+};
+
+const config = async (env: Env): Promise<Configuration> => {
   const baseConfig: Configuration = {
     cache: {
       type: 'filesystem',
@@ -70,17 +74,17 @@ const config = async (env): Promise<Configuration> => {
       'react-router',
       'd3',
       'angular',
-      '@grafana/ui',
-      '@grafana/runtime',
-      '@grafana/data',
+      /^@grafana\/ui/i,
+      /^@grafana\/runtime/i,
+      /^@grafana\/data/i,
 
       // Mark legacy SDK imports as external if their name starts with the "grafana/" prefix
       ({ request }, callback) => {
         const prefix = 'grafana/';
-        const hasPrefix = (request) => request.indexOf(prefix) === 0;
-        const stripPrefix = (request) => request.substr(prefix.length);
+        const hasPrefix = (request: string) => request.indexOf(prefix) === 0;
+        const stripPrefix = (request: string) => request.substr(prefix.length);
 
-        if (hasPrefix(request)) {
+        if (request && hasPrefix(request)) {
           return callback(undefined, stripPrefix(request));
         }
 
